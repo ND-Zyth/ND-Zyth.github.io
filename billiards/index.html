@@ -1,0 +1,1746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billiards Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: white;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .game-container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        .table-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .billiards-table {
+            position: relative;
+            background: #0f5132;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        }
+
+        .table-edge {
+            position: absolute;
+            background: #8B4513;
+        }
+
+        .hole {
+            position: absolute;
+            background: #000;
+            border-radius: 40% 40% 40% 40%;
+            z-index: 10;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+        }
+        
+        .corner-hole {
+            border-radius: 30% 30% 30% 30%;
+        }
+        
+        .side-hole {
+            border-radius: 40% 40% 40% 40%;
+        }
+
+        .ball {
+            position: absolute;
+            border-radius: 50%;
+            z-index: 5;
+            transition: none;
+            border: 1px solid rgba(0,0,0,0.2);
+            box-shadow: inset -2px -2px 4px rgba(0,0,0,0.3), inset 2px 2px 4px rgba(255,255,255,0.3);
+            background-size: cover;
+            background-position: center;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+
+        .ball.moving {
+            transition: none;
+        }
+
+        .ball.stopped {
+            transition: all 0.1s ease-out;
+        }
+        
+        .cue-ball {
+            background: radial-gradient(circle at 35% 35%, white 0%, #f0f0f0 60%, #e0e0e0 100%);
+        }
+
+        .cue-ball {
+            background: white;
+        }
+
+        .control-panel {
+            width: 300px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-left: 1px solid #ddd;
+            overflow-y: auto;
+        }
+
+        .section {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .section h3 {
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 16px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+
+        .game-mode, .difficulty-mode {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .mode-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mode-option input[type="radio"] {
+            margin: 0;
+        }
+
+        .color-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .color-control {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .color-control label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .color-control input[type="color"] {
+            width: 100%;
+            height: 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .size-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .size-control {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .size-control label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .size-control input[type="range"] {
+            width: 100%;
+        }
+
+        .power-control {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .power-slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .power-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #007bff;
+            cursor: pointer;
+        }
+
+        .stroke-button {
+            width: 100%;
+            padding: 12px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .stroke-button:hover {
+            background: #218838;
+        }
+
+        .stroke-button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .game-info {
+            text-align: center;
+        }
+
+        .current-player {
+            font-size: 18px;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+
+        .score {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .trace-line {
+            position: absolute;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        .ball-ghost {
+            position: absolute;
+            border-radius: 50%;
+            z-index: 4;
+            opacity: 0.3;
+            pointer-events: none;
+            border: 1px solid rgba(0,0,0,0.2);
+        }
+
+        .aiming-line {
+            position: absolute;
+            z-index: 2;
+            pointer-events: none;
+            stroke-dasharray: 5,5;
+        }
+
+        .cue-stick {
+            position: absolute;
+            z-index: 6;
+            pointer-events: none;
+            transform-origin: 100% 50%;
+            transition: none;
+            will-change: transform;
+        }
+
+        .cue-stick-shaft {
+            width: 250px;
+            height: 8px;
+            background: linear-gradient(to left, #8B4513 0%, #D2691E 70%, #F4A460 100%);
+            border-radius: 4px;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .cue-stick-tip {
+            position: absolute;
+            right: -3px;
+            top: 1px;
+            width: 6px;
+            height: 6px;
+            background: #2F4F4F;
+            border-radius: 50%;
+        }
+
+        .cue-stick.hitting {
+            animation: cueHit 0.2s ease-out;
+        }
+
+        @keyframes cueHit {
+            0% { transform: translate(var(--cue-x), var(--cue-y)) rotate(var(--cue-angle)); }
+            50% { transform: translate(calc(var(--cue-x) + 20px), var(--cue-y)) rotate(var(--cue-angle)); }
+            100% { transform: translate(var(--cue-x), var(--cue-y)) rotate(var(--cue-angle)); }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="table-container">
+            <div class="billiards-table" id="table">
+                <svg id="traces" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 3;"></svg>
+                <div class="cue-stick" id="cueStick" style="display: none;">
+                    <div class="cue-stick-shaft">
+                        <div class="cue-stick-tip"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="control-panel">
+            <div class="section">
+                <h3>Game Mode</h3>
+                <div class="game-mode">
+                    <div class="mode-option">
+                        <input type="radio" id="small-big" name="gameMode" value="small-big" checked>
+                        <label for="small-big">Small/Big Billiards</label>
+                    </div>
+                    <div class="mode-option">
+                        <input type="radio" id="snooker" name="gameMode" value="snooker">
+                        <label for="snooker">Snooker</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Difficulty</h3>
+                <div class="difficulty-mode">
+                    <div class="mode-option">
+                        <input type="radio" id="normal" name="difficulty" value="normal" checked>
+                        <label for="normal">Normal Mode</label>
+                    </div>
+                    <div class="mode-option">
+                        <input type="radio" id="hard" name="difficulty" value="hard">
+                        <label for="hard">Hard Mode</label>
+                    </div>
+                    <div class="mode-option">
+                        <input type="radio" id="cheat" name="difficulty" value="cheat">
+                        <label for="cheat">Cheat Mode</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Table Colors</h3>
+                <div class="color-controls">
+                    <div class="color-control">
+                        <label>Table</label>
+                        <input type="color" id="tableColor" value="#0f5132">
+                    </div>
+                    <div class="color-control">
+                        <label>Edge</label>
+                        <input type="color" id="edgeColor" value="#8B4513">
+                    </div>
+                    <div class="color-control">
+                        <label>Holes</label>
+                        <input type="color" id="holeColor" value="#000000">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Table Sizes</h3>
+                <div class="size-controls">
+                    <div class="size-control">
+                        <label>Edge Size: <span id="edgeSizeValue">20</span>px</label>
+                        <input type="range" id="edgeSize" min="10" max="40" value="20">
+                    </div>
+                    <div class="size-control">
+                        <label>Hole Size: <span id="holeSizeValue">25</span>px</label>
+                        <input type="range" id="holeSize" min="15" max="40" value="25">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Shot Power</h3>
+                <div class="power-control">
+                    <label>Power: <span id="powerValue">50</span>%</label>
+                    <input type="range" class="power-slider" id="powerSlider" min="1" max="100" value="50">
+                    <button class="stroke-button" id="strokeButton">STROKE</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Game Info</h3>
+                <div class="game-info">
+                    <div class="current-player" id="currentPlayer">Player 1's Turn</div>
+                    <div class="score">
+                        <span>Player 1: <span id="score1">0</span></span>
+                        <span>Player 2: <span id="score2">0</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game state and configuration
+        const game = {
+            mode: 'small-big',
+            difficulty: 'normal',
+            currentPlayer: 1,
+            scores: [0, 0],
+            balls: [],
+            cueBall: null,
+            isAiming: false,
+            isAnimating: false,
+            aimStart: null,
+            aimCurrent: null,
+            lastClickPosition: null,
+            power: 50,
+            showCueStick: true,
+            table: {
+                width: 800,
+                height: 400,
+                edgeSize: 20,
+                holeSize: 25
+            },
+            physics: {
+                friction: 0.985,
+                restitution: 0.85,
+                minSpeed: 0.05,
+                collisionDamping: 0.95,
+                maxSpeed: 25,  // Increased from 15
+                traceLength: 200  // Longer traces
+            }
+        };
+
+        // Ball colors for different modes
+        const ballColors = {
+            'small-big': [
+                '#FFFF00', '#0000FF', '#FF0000', '#800080', '#FFA500', '#008000', '#8B0000',
+                '#FFFF00', '#0000FF', '#FF0000', '#800080', '#FFA500', '#008000', '#8B0000', '#000000'
+            ],
+            'snooker': [
+                '#FF0000', '#FFFF00', '#008000', '#8B4513', '#0000FF', '#FFC0CB', '#000000',
+                '#FF0000', '#FF0000', '#FF0000', '#FF0000', '#FF0000', '#FF0000', '#FF0000',
+                '#FF0000', '#FF0000', '#FF0000', '#FF0000', '#FF0000', '#FF0000', '#FF0000'
+            ]
+        };
+
+        // Initialize the game
+        function initGame() {
+            const table = document.getElementById('table');
+            setupTable();
+            setupBalls();
+            setupEventListeners();
+            updateUI();
+        }
+
+        function setupTable() {
+            const table = document.getElementById('table');
+            table.style.width = game.table.width + 'px';
+            table.style.height = game.table.height + 'px';
+            
+            // Clear existing elements
+            const existingElements = table.querySelectorAll('.table-edge, .hole, .ball');
+            existingElements.forEach(el => el.remove());
+            
+            // Create edges
+            createEdges();
+            
+            // Create holes
+            createHoles();
+        }
+
+        function createEdges() {
+            const table = document.getElementById('table');
+            const edgeSize = game.table.edgeSize;
+            
+            // Top edge
+            const topEdge = document.createElement('div');
+            topEdge.className = 'table-edge';
+            topEdge.style.top = '0px';
+            topEdge.style.left = '0px';
+            topEdge.style.width = game.table.width + 'px';
+            topEdge.style.height = edgeSize + 'px';
+            table.appendChild(topEdge);
+            
+            // Bottom edge
+            const bottomEdge = document.createElement('div');
+            bottomEdge.className = 'table-edge';
+            bottomEdge.style.bottom = '0px';
+            bottomEdge.style.left = '0px';
+            bottomEdge.style.width = game.table.width + 'px';
+            bottomEdge.style.height = edgeSize + 'px';
+            table.appendChild(bottomEdge);
+            
+            // Left edge
+            const leftEdge = document.createElement('div');
+            leftEdge.className = 'table-edge';
+            leftEdge.style.top = '0px';
+            leftEdge.style.left = '0px';
+            leftEdge.style.width = edgeSize + 'px';
+            leftEdge.style.height = game.table.height + 'px';
+            table.appendChild(leftEdge);
+            
+            // Right edge
+            const rightEdge = document.createElement('div');
+            rightEdge.className = 'table-edge';
+            rightEdge.style.top = '0px';
+            rightEdge.style.right = '0px';
+            rightEdge.style.width = edgeSize + 'px';
+            rightEdge.style.height = game.table.height + 'px';
+            table.appendChild(rightEdge);
+        }
+
+        function createHoles() {
+            const table = document.getElementById('table');
+            const holeSize = game.table.holeSize;
+            const edgeSize = game.table.edgeSize;
+            
+            // Corner holes - larger and extend beyond table edges
+            const cornerPositions = [
+                { x: -holeSize/3, y: -holeSize/3, class: 'corner-hole' }, // Top-left
+                { x: game.table.width - holeSize*2/3, y: -holeSize/3, class: 'corner-hole' }, // Top-right
+                { x: -holeSize/3, y: game.table.height - holeSize*2/3, class: 'corner-hole' }, // Bottom-left
+                { x: game.table.width - holeSize*2/3, y: game.table.height - holeSize*2/3, class: 'corner-hole' } // Bottom-right
+            ];
+            
+            // Side holes - more elongated
+            const sidePositions = [
+                { x: game.table.width / 2 - holeSize / 2, y: -holeSize/4, class: 'side-hole' }, // Top-center
+                { x: game.table.width / 2 - holeSize / 2, y: game.table.height - holeSize*3/4, class: 'side-hole' } // Bottom-center
+            ];
+            
+            // Create all holes
+            [...cornerPositions, ...sidePositions].forEach(pos => {
+                const hole = document.createElement('div');
+                hole.className = `hole ${pos.class}`;
+                hole.style.left = pos.x + 'px';
+                hole.style.top = pos.y + 'px';
+                hole.style.width = holeSize * 1.2 + 'px'; // Make holes slightly larger
+                hole.style.height = holeSize * 1.2 + 'px';
+                table.appendChild(hole);
+            });
+        }
+
+        function setupBalls() {
+            game.balls = [];
+            const table = document.getElementById('table');
+            
+            // Clear existing balls
+            const existingBalls = table.querySelectorAll('.ball');
+            existingBalls.forEach(ball => ball.remove());
+            
+            const ballRadius = 10;
+            const colors = ballColors[game.mode];
+            
+            // Create cue ball
+            game.cueBall = createBall(game.table.width * 0.25, game.table.height / 2, 'white', true);
+            
+            // Create other balls in triangle formation
+            if (game.mode === 'small-big') {
+                setupSmallBigBalls(ballRadius, colors);
+            } else {
+                setupSnookerBalls(ballRadius, colors);
+            }
+        }
+
+        function createBall(x, y, color, isCue = false) {
+            const table = document.getElementById('table');
+            const ball = document.createElement('div');
+            ball.className = isCue ? 'ball cue-ball' : 'ball';
+            ball.style.left = (x - 10) + 'px';
+            ball.style.top = (y - 10) + 'px';
+            ball.style.width = '20px';
+            ball.style.height = '20px';
+            
+            if (!isCue) {
+                // Create high-resolution ball with gradient and number
+                const ballNumber = game.balls.length + 1;
+                
+                // Create gradient background based on color
+                const colorRGB = hexToRgb(color);
+                const lightColor = shadeColor(color, 40); // Lighter version
+                const darkColor = shadeColor(color, -20); // Darker version
+                
+                ball.style.background = `radial-gradient(circle at 35% 35%, ${lightColor} 0%, ${color} 60%, ${darkColor} 100%)`;
+                
+                // Add ball number if it's a numbered ball
+                if (game.mode === 'small-big' && ballNumber <= 15) {
+                    // Create a centered number
+                    const numberDiv = document.createElement('div');
+                    numberDiv.style.position = 'absolute';
+                    numberDiv.style.top = '50%';
+                    numberDiv.style.left = '50%';
+                    numberDiv.style.transform = 'translate(-50%, -50%)';
+                    numberDiv.style.color = ballNumber <= 8 ? 'white' : 'black';
+                    numberDiv.style.fontSize = '10px';
+                    numberDiv.style.fontWeight = 'bold';
+                    numberDiv.style.textAlign = 'center';
+                    numberDiv.style.lineHeight = '20px';
+                    numberDiv.style.width = '100%';
+                    numberDiv.style.height = '100%';
+                    numberDiv.style.userSelect = 'none';
+                    numberDiv.style.pointerEvents = 'none';
+                    numberDiv.textContent = ballNumber;
+                    ball.appendChild(numberDiv);
+                }
+            }
+            
+            table.appendChild(ball);
+            
+            const ballObj = {
+                element: ball,
+                x: x,
+                y: y,
+                vx: 0,
+                vy: 0,
+                radius: 10,
+                color: color,
+                isCue: isCue,
+                inHole: false
+            };
+            
+            if (!isCue) {
+                game.balls.push(ballObj);
+            }
+            
+            return ballObj;
+        }
+        
+        // Helper function to convert hex to RGB
+        function hexToRgb(hex) {
+            // Remove # if present
+            hex = hex.replace('#', '');
+            
+            // Parse the hex values
+            const r = parseInt(hex.substring(0, 2), 16);
+            const g = parseInt(hex.substring(2, 4), 16);
+            const b = parseInt(hex.substring(4, 6), 16);
+            
+            return { r, g, b };
+        }
+        
+        // Helper function to lighten or darken a color
+        function shadeColor(color, percent) {
+            const rgb = hexToRgb(color);
+            
+            // Calculate new color
+            let r = rgb.r + Math.round(percent / 100 * 255);
+            let g = rgb.g + Math.round(percent / 100 * 255);
+            let b = rgb.b + Math.round(percent / 100 * 255);
+            
+            // Ensure values are in range
+            r = Math.max(0, Math.min(255, r));
+            g = Math.max(0, Math.min(255, g));
+            b = Math.max(0, Math.min(255, b));
+            
+            // Convert back to hex
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+
+        function setupSmallBigBalls(ballRadius, colors) {
+            const startX = game.table.width * 0.75;
+            const startY = game.table.height / 2;
+            const spacing = ballRadius * 2.1;
+            
+            let ballIndex = 0;
+            for (let row = 0; row < 5; row++) {
+                for (let col = 0; col <= row; col++) {
+                    if (ballIndex < colors.length - 1) { // -1 because last color is for 8-ball
+                        const x = startX + row * spacing * 0.866;
+                        const y = startY + (col - row / 2) * spacing;
+                        createBall(x, y, colors[ballIndex]);
+                        ballIndex++;
+                    }
+                }
+            }
+            
+            // Add 8-ball in center
+            createBall(startX + 2 * spacing * 0.866, startY, colors[colors.length - 1]);
+        }
+
+        function setupSnookerBalls(ballRadius, colors) {
+            // Simplified snooker setup
+            const positions = [
+                { x: game.table.width * 0.75, y: game.table.height / 2 }, // Red balls area
+                { x: game.table.width * 0.8, y: game.table.height / 2 - 30 },
+                { x: game.table.width * 0.8, y: game.table.height / 2 + 30 },
+                { x: game.table.width * 0.85, y: game.table.height / 2 },
+                { x: game.table.width * 0.9, y: game.table.height / 2 - 15 },
+                { x: game.table.width * 0.9, y: game.table.height / 2 + 15 }
+            ];
+            
+            positions.forEach((pos, index) => {
+                if (index < colors.length) {
+                    createBall(pos.x, pos.y, colors[index]);
+                }
+            });
+        }
+
+        function setupEventListeners() {
+            const table = document.getElementById('table');
+            
+            // Mouse events for aiming
+            table.addEventListener('mousedown', startAiming);
+            table.addEventListener('mousemove', updateAiming);
+            table.addEventListener('mouseup', stopAiming);
+            table.addEventListener('touchstart', handleTouchStart);
+            table.addEventListener('touchmove', handleTouchMove);
+            table.addEventListener('touchend', handleTouchEnd);
+            
+            // Handle mouse leaving/entering table
+            table.addEventListener('mouseleave', function(e) {
+                // Don't hide cue stick when mouse leaves, keep last position
+                if (game.isAiming) {
+                    game.isAiming = false;
+                }
+            });
+            
+            table.addEventListener('mouseenter', function(e) {
+                // Show cue stick when mouse enters if not animating
+                if (!game.isAnimating) {
+                    showCueStickIfReady();
+                }
+            });
+            
+            // Control panel events
+            document.getElementById('strokeButton').addEventListener('click', stroke);
+            document.getElementById('powerSlider').addEventListener('input', updatePower);
+            
+            // Game mode changes
+            document.querySelectorAll('input[name="gameMode"]').forEach(radio => {
+                radio.addEventListener('change', changeGameMode);
+            });
+            
+            document.querySelectorAll('input[name="difficulty"]').forEach(radio => {
+                radio.addEventListener('change', changeDifficulty);
+            });
+            
+            // Color and size controls
+            document.getElementById('tableColor').addEventListener('change', updateTableColor);
+            document.getElementById('edgeColor').addEventListener('change', updateEdgeColor);
+            document.getElementById('holeColor').addEventListener('change', updateHoleColor);
+            document.getElementById('edgeSize').addEventListener('input', updateEdgeSize);
+            document.getElementById('holeSize').addEventListener('input', updateHoleSize);
+            
+            // Handle window resize
+            window.addEventListener('resize', handleResize);
+        }
+        
+        // Touch event handlers for mobile devices
+        function handleTouchStart(e) {
+            e.preventDefault();
+            if (e.touches.length === 1) {
+                const touch = e.touches[0];
+                const rect = e.currentTarget.getBoundingClientRect();
+                const x = touch.clientX - rect.left;
+                const y = touch.clientY - rect.top;
+                
+                // Store the touch position as a click
+                game.lastClickPosition = { x, y };
+                
+                startAiming({ currentTarget: e.currentTarget, clientX: touch.clientX, clientY: touch.clientY });
+            }
+        }
+        
+        function handleTouchMove(e) {
+            e.preventDefault();
+            if (e.touches.length === 1) {
+                const touch = e.touches[0];
+                updateAiming({ currentTarget: e.currentTarget, clientX: touch.clientX, clientY: touch.clientY });
+            }
+        }
+        
+        function handleTouchEnd(e) {
+            e.preventDefault();
+            // Use the last click position for the final position
+            stopAiming({ 
+                currentTarget: e.currentTarget, 
+                clientX: game.lastClickPosition?.x || 0, 
+                clientY: game.lastClickPosition?.y || 0 
+            });
+        }
+        
+        function handleResize() {
+            // Reposition cue stick when window resizes
+            if (!game.isAnimating && game.aimCurrent) {
+                updateCueStickPosition(game.aimCurrent.x, game.aimCurrent.y);
+            }
+        }
+
+        function startAiming(e) {
+            if (game.isAnimating) return;
+            
+            const rect = e.currentTarget.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            game.isAiming = true;
+            
+            // Store the click position - this is what determines the angle
+            game.aimStart = { x, y };
+            game.aimCurrent = { x, y };
+            game.lastClickPosition = { x, y }; // Store last click position separately
+            
+            clearTraces();
+            
+            // Update cue stick position to point AT the ball based on click position
+            updateCueStickPosition(x, y, true); // true indicates this is a click
+        }
+
+        function updateAiming(e) {
+            if (game.isAnimating) return;
+            
+            const rect = e.currentTarget.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // Update current mouse position for traces
+            game.aimCurrent = { x, y };
+            
+            if (game.isAiming) {
+                clearTraces();
+                
+                // Use the last click position for aiming direction, not current mouse position
+                const clickX = game.lastClickPosition.x;
+                const clickY = game.lastClickPosition.y;
+                
+                const dx = game.cueBall.x - clickX;
+                const dy = game.cueBall.y - clickY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance > 5) {
+                    // Direction is FROM click position TO ball for aiming traces
+                    const direction = { x: dx / distance, y: dy / distance };
+                    showAimingTrace(direction);
+                    
+                    // Update cue stick position to point AT the ball based on click position
+                    updateCueStickPosition(clickX, clickY, false); // false indicates this is not a click
+                }
+            }
+        }
+
+        function stopAiming(e) {
+            if (game.isAnimating) return;
+            
+            const rect = e.currentTarget.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            game.isAiming = false;
+            
+            // Update the last click position
+            game.lastClickPosition = { x, y };
+            
+            // Update cue stick to point to the last clicked position
+            updateCueStickPosition(x, y, true); // true indicates this is a click
+        }
+
+        function hideCueStick() {
+            const cueStick = document.getElementById('cueStick');
+            cueStick.style.display = 'none';
+        }
+
+        function showCueStickIfReady() {
+            if (!game.isAnimating && game.aimCurrent) {
+                updateCueStickPosition(game.aimCurrent.x, game.aimCurrent.y);
+            } else if (!game.isAnimating) {
+                // Default position is to the left of the cue ball
+                const defaultX = game.cueBall.x - 100;
+                const defaultY = game.cueBall.y;
+                
+                updateCueStickPosition(defaultX, defaultY);
+            }
+        }
+
+        function updateCueStickPosition(mouseX, mouseY, isClick) {
+            if (game.isAnimating) return;
+            
+            const cueStick = document.getElementById('cueStick');
+            
+            // If this is a click, update the last click position
+            if (isClick) {
+                game.lastClickPosition = { x: mouseX, y: mouseY };
+            }
+            
+            // Use the last click position for direction if available
+            const targetX = game.lastClickPosition ? game.lastClickPosition.x : mouseX;
+            const targetY = game.lastClickPosition ? game.lastClickPosition.y : mouseY;
+            
+            // Calculate direction from click to cue ball
+            const dx = game.cueBall.x - targetX;
+            const dy = game.cueBall.y - targetY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance > 5) {
+                const angle = Math.atan2(dy, dx);
+                
+                // Position cue stick very close to the ball (10px from ball center)
+                // This ensures it's always in the same place near the ball
+                const cueDistance = 10; // Very close to ball
+                const cueX = game.cueBall.x - Math.cos(angle) * cueDistance;
+                const cueY = game.cueBall.y - Math.sin(angle) * cueDistance;
+                
+                // Store the position for animation
+                const translateX = cueX - cueStick.offsetWidth;
+                const translateY = cueY - 4; // Center vertically
+                
+                // Apply transforms in a browser-compatible way
+                cueStick.style.display = 'block';
+                cueStick.style.setProperty('--cue-x', `${translateX}px`);
+                cueStick.style.setProperty('--cue-y', `${translateY}px`);
+                cueStick.style.setProperty('--cue-angle', `${angle}rad`);
+                cueStick.style.transform = `translate(${translateX}px, ${translateY}px) rotate(${angle}rad)`;
+                
+                // Store the last aiming position
+                game.aimCurrent = { x: mouseX, y: mouseY };
+            } else {
+                cueStick.style.display = 'none';
+            }
+        }
+
+        function stroke() {
+            if (game.isAnimating || !game.lastClickPosition) return;
+            
+            // Calculate direction FROM cue ball TO last click position (for velocity)
+            const dx = game.cueBall.x - game.lastClickPosition.x;
+            const dy = game.cueBall.y - game.lastClickPosition.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance > 5) {
+                // Show cue stick hitting animation
+                const cueStick = document.getElementById('cueStick');
+                const angle = Math.atan2(dy, dx);
+                
+                // Position cue stick for hit animation - pointing AT the ball and very close to it
+                const cueDistance = 10; // Very close to ball
+                
+                // Use transform for positioning
+                const cueX = game.cueBall.x - Math.cos(angle) * cueDistance;
+                const cueY = game.cueBall.y - Math.sin(angle) * cueDistance;
+                
+                const translateX = cueX - cueStick.offsetWidth;
+                const translateY = cueY - 4;
+                
+                // Set CSS variables for animation
+                cueStick.style.setProperty('--cue-x', `${translateX}px`);
+                cueStick.style.setProperty('--cue-y', `${translateY}px`);
+                cueStick.style.setProperty('--cue-angle', `${angle}rad`);
+                
+                cueStick.style.display = 'block';
+                cueStick.style.transform = `translate(${translateX}px, ${translateY}px) rotate(${angle}rad)`;
+                cueStick.classList.add('hitting');
+                
+                // Add realistic hit sound
+                playHitSound(game.power);
+                
+                // Remove animation class after animation completes
+                setTimeout(() => {
+                    cueStick.classList.remove('hitting');
+                    hideCueStick();
+                }, 200);
+                
+                // Apply force to cue ball after a short delay to sync with animation
+                // Direction is FROM cue stick TO ball (opposite of cue stick direction)
+                setTimeout(() => {
+                    const direction = { x: -dx / distance, y: -dy / distance };
+                    const power = game.power / 100;
+                    const maxSpeed = game.physics.maxSpeed;
+                    
+                    // Add slight randomness based on power for realism
+                    const randomFactor = 0.02 * (game.power / 50);
+                    const randomAngle = (Math.random() - 0.5) * randomFactor;
+                    
+                    // Apply slight rotation to direction for realism
+                    const rotatedDirX = direction.x * Math.cos(randomAngle) - direction.y * Math.sin(randomAngle);
+                    const rotatedDirY = direction.x * Math.sin(randomAngle) + direction.y * Math.cos(randomAngle);
+                    
+                    game.cueBall.vx = rotatedDirX * power * maxSpeed;
+                    game.cueBall.vy = rotatedDirY * power * maxSpeed;
+                    
+                    clearTraces();
+                    startAnimation();
+                }, 100); // Hit occurs in middle of animation
+            }
+        }
+        
+        function playHitSound(power) {
+            // Create audio context on demand (to work around autoplay restrictions)
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            
+            // Create oscillator for hit sound
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            // Configure sound based on power
+            oscillator.type = 'sine';
+            oscillator.frequency.value = 150 + power; // Higher pitch for stronger hits
+            
+            // Configure volume and envelope
+            gainNode.gain.value = Math.min(0.2, power / 200); // Limit volume
+            
+            // Connect nodes
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            // Play sound with quick decay
+            oscillator.start();
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.15);
+            oscillator.stop(audioContext.currentTime + 0.15);
+        }
+
+        function showAimingTrace(direction) {
+            const svg = document.getElementById('traces');
+            const difficulty = document.querySelector('input[name="difficulty"]:checked').value;
+            
+            // Use the direction as is (already calculated from click to ball)
+            const aimDirection = {
+                x: -direction.x,
+                y: -direction.y
+            };
+            
+            if (difficulty === 'hard') {
+                // Only show cue ball direction
+                showSingleTrace(game.cueBall, aimDirection, 1.0, 'white');
+                return;
+            }
+            
+            // Calculate cue ball trajectory
+            const cueBallTrace = calculateTrajectory(game.cueBall, aimDirection, game.power / 100 * game.physics.maxSpeed);
+            showTrajectoryTrace(cueBallTrace, 'white');
+            
+            // Find first collision
+            const collision = findFirstCollision(game.cueBall, aimDirection, game.power / 100 * game.physics.maxSpeed);
+            
+            if (collision && collision.ball) {
+                // Show first hit ball trajectory
+                const hitBallTrace = calculateTrajectory(collision.ball, collision.direction, collision.speed);
+                showTrajectoryTrace(hitBallTrace, collision.ball.color);
+                
+                if (difficulty === 'cheat') {
+                    // Show all ball trajectories and final positions
+                    showCheatMode();
+                }
+            }
+        }
+
+        function calculateTrajectory(ball, direction, speed) {
+            const trace = [];
+            let x = ball.x;
+            let y = ball.y;
+            let vx = direction.x * speed;
+            let vy = direction.y * speed;
+            
+            // Use longer trace length from physics settings
+            const steps = game.physics.traceLength;
+            const dt = 0.1;
+            
+            for (let i = 0; i < steps; i++) {
+                // Apply friction
+                vx *= game.physics.friction;
+                vy *= game.physics.friction;
+                
+                // Update position
+                x += vx * dt;
+                y += vy * dt;
+                
+                // Check boundaries
+                const edgeSize = game.table.edgeSize;
+                if (x <= edgeSize + ball.radius || x >= game.table.width - edgeSize - ball.radius) {
+                    vx *= -game.physics.restitution;
+                    x = Math.max(edgeSize + ball.radius, Math.min(game.table.width - edgeSize - ball.radius, x));
+                }
+                if (y <= edgeSize + ball.radius || y >= game.table.height - edgeSize - ball.radius) {
+                    vy *= -game.physics.restitution;
+                    y = Math.max(edgeSize + ball.radius, Math.min(game.table.height - edgeSize - ball.radius, y));
+                }
+                
+                const currentSpeed = Math.sqrt(vx * vx + vy * vy);
+                trace.push({ x, y, speed: currentSpeed });
+                
+                if (currentSpeed < game.physics.minSpeed) break;
+            }
+            
+            return trace;
+        }
+
+        function findFirstCollision(cueBall, direction, speed) {
+            let minDistance = Infinity;
+            let closestBall = null;
+            
+            game.balls.forEach(ball => {
+                if (ball.inHole) return;
+                
+                const dx = ball.x - cueBall.x;
+                const dy = ball.y - cueBall.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                // Check if ball is in the direction of the shot
+                const dot = dx * direction.x + dy * direction.y;
+                if (dot > 0 && distance < minDistance) {
+                    minDistance = distance;
+                    closestBall = ball;
+                }
+            });
+            
+            if (closestBall) {
+                const dx = closestBall.x - cueBall.x;
+                const dy = closestBall.y - cueBall.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const collisionDirection = { x: dx / distance, y: dy / distance };
+                
+                return {
+                    ball: closestBall,
+                    direction: collisionDirection,
+                    speed: speed * 0.8 // Energy transfer
+                };
+            }
+            
+            return null;
+        }
+
+        function showTrajectoryTrace(trace, color) {
+            const svg = document.getElementById('traces');
+            
+            for (let i = 0; i < trace.length - 1; i++) {
+                const current = trace[i];
+                const next = trace[i + 1];
+                
+                // Calculate opacity based on speed and position in trace
+                // This makes traces fade out more gradually
+                const maxSpeed = game.physics.maxSpeed;
+                const speedFactor = Math.max(0.1, current.speed / maxSpeed);
+                const positionFactor = Math.max(0.2, 1 - (i / trace.length));
+                const opacity = speedFactor * positionFactor * 0.8;
+                
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', current.x);
+                line.setAttribute('y1', current.y);
+                line.setAttribute('x2', next.x);
+                line.setAttribute('y2', next.y);
+                line.setAttribute('stroke', color);
+                line.setAttribute('stroke-width', '2');
+                line.setAttribute('opacity', opacity);
+                
+                // Use solid lines for better visibility
+                if (i % 3 === 0) {
+                    line.setAttribute('stroke-dasharray', '3,2');
+                }
+                
+                svg.appendChild(line);
+            }
+        }
+
+        function showSingleTrace(ball, direction, opacity, color) {
+            const svg = document.getElementById('traces');
+            const length = 100;
+            
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', ball.x);
+            line.setAttribute('y1', ball.y);
+            line.setAttribute('x2', ball.x + direction.x * length);
+            line.setAttribute('y2', ball.y + direction.y * length);
+            line.setAttribute('stroke', color);
+            line.setAttribute('stroke-width', '2');
+            line.setAttribute('opacity', opacity);
+            line.setAttribute('stroke-dasharray', '5,5');
+            svg.appendChild(line);
+        }
+
+        function showCheatMode() {
+            // Show all ball trajectories and ghost positions
+            const allBalls = [game.cueBall, ...game.balls.filter(b => !b.inHole)];
+            
+            // Get current aiming direction
+            if (!game.aimCurrent) return;
+            
+            const dx = game.aimCurrent.x - game.cueBall.x;
+            const dy = game.aimCurrent.y - game.cueBall.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance <= 5) return;
+            
+            const direction = { x: dx / distance, y: dy / distance };
+            const power = game.power / 100;
+            const maxSpeed = 15;
+            
+            // Create a deep copy of all balls for simulation
+            const simulatedBalls = [
+                { ...game.cueBall, vx: direction.x * power * maxSpeed, vy: direction.y * power * maxSpeed },
+                ...game.balls.filter(b => !b.inHole).map(b => ({ ...b, vx: 0, vy: 0 }))
+            ];
+            
+            // Run physics simulation
+            const finalPositions = simulateFullPhysics(simulatedBalls);
+            
+            // Show final positions and trajectories
+            finalPositions.forEach((finalBall, index) => {
+                if (index === 0) return; // Skip cue ball
+                
+                const originalBall = game.balls[index - 1];
+                if (originalBall && !originalBall.inHole) {
+                    // Show ghost ball at final position
+                    showGhostBall(finalBall.x, finalBall.y, originalBall.color);
+                    
+                    // Show trajectory line from current to final position
+                    const svg = document.getElementById('traces');
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', originalBall.x);
+                    line.setAttribute('y1', originalBall.y);
+                    line.setAttribute('x2', finalBall.x);
+                    line.setAttribute('y2', finalBall.y);
+                    line.setAttribute('stroke', originalBall.color);
+                    line.setAttribute('stroke-width', '1');
+                    line.setAttribute('opacity', '0.4');
+                    line.setAttribute('stroke-dasharray', '2,2');
+                    svg.appendChild(line);
+                }
+            });
+        }
+        
+        function simulateFullPhysics(balls) {
+            // Deep copy of balls to avoid modifying originals
+            const simBalls = JSON.parse(JSON.stringify(balls));
+            
+            // Run simulation for a fixed number of steps or until all balls stop
+            const maxSteps = 300;
+            for (let step = 0; step < maxSteps; step++) {
+                let anyMoving = false;
+                
+                // Update ball positions
+                simBalls.forEach(ball => {
+                    if (Math.abs(ball.vx) > game.physics.minSpeed || Math.abs(ball.vy) > game.physics.minSpeed) {
+                        // Apply friction
+                        ball.vx *= game.physics.friction;
+                        ball.vy *= game.physics.friction;
+                        
+                        // Update position
+                        ball.x += ball.vx;
+                        ball.y += ball.vy;
+                        
+                        // Boundary collisions
+                        const edgeSize = game.table.edgeSize;
+                        if (ball.x <= edgeSize + ball.radius) {
+                            ball.x = edgeSize + ball.radius;
+                            ball.vx *= -game.physics.restitution;
+                        }
+                        if (ball.x >= game.table.width - edgeSize - ball.radius) {
+                            ball.x = game.table.width - edgeSize - ball.radius;
+                            ball.vx *= -game.physics.restitution;
+                        }
+                        if (ball.y <= edgeSize + ball.radius) {
+                            ball.y = edgeSize + ball.radius;
+                            ball.vy *= -game.physics.restitution;
+                        }
+                        if (ball.y >= game.table.height - edgeSize - ball.radius) {
+                            ball.y = game.table.height - edgeSize - ball.radius;
+                            ball.vy *= -game.physics.restitution;
+                        }
+                        
+                        anyMoving = true;
+                    }
+                });
+                
+                // Check for collisions - use correct ball size
+                for (let i = 0; i < simBalls.length; i++) {
+                    for (let j = i + 1; j < simBalls.length; j++) {
+                        const ball1 = simBalls[i];
+                        const ball2 = simBalls[j];
+                        
+                        const dx = ball2.x - ball1.x;
+                        const dy = ball2.y - ball1.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        // Use actual ball radius (10px) for collision detection
+                        if (distance < ball1.radius + ball2.radius) {
+                            // Collision detected
+                            const overlap = ball1.radius + ball2.radius - distance;
+                            
+                            // Normalize direction vector
+                            const nx = dx / distance;
+                            const ny = dy / distance;
+                            
+                            // Separate balls
+                            ball1.x -= nx * overlap * 0.5;
+                            ball1.y -= ny * overlap * 0.5;
+                            ball2.x += nx * overlap * 0.5;
+                            ball2.y += ny * overlap * 0.5;
+                            
+                            // Calculate collision response
+                            const relativeVelocityX = ball2.vx - ball1.vx;
+                            const relativeVelocityY = ball2.vy - ball1.vy;
+                            const dotProduct = relativeVelocityX * nx + relativeVelocityY * ny;
+                            
+                            if (dotProduct > 0) continue; // Objects separating
+                            
+                            const impulse = 2 * dotProduct / 2 * game.physics.collisionDamping;
+                            
+                            ball1.vx += impulse * nx;
+                            ball1.vy += impulse * ny;
+                            ball2.vx -= impulse * nx;
+                            ball2.vy -= impulse * ny;
+                        }
+                    }
+                }
+                
+                // Check for holes - use larger detection radius
+                simBalls.forEach(ball => {
+                    // Corner holes
+                    const cornerHoles = [
+                        { x: 0, y: 0 },
+                        { x: game.table.width, y: 0 },
+                        { x: 0, y: game.table.height },
+                        { x: game.table.width, y: game.table.height }
+                    ];
+                    
+                    // Side holes
+                    const sideHoles = [
+                        { x: game.table.width / 2, y: 0 },
+                        { x: game.table.width / 2, y: game.table.height }
+                    ];
+                    
+                    // Check all holes with appropriate detection radius
+                    [...cornerHoles, ...sideHoles].forEach(hole => {
+                        const dx = ball.x - hole.x;
+                        const dy = ball.y - hole.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        // Use larger detection radius for holes
+                        const holeRadius = game.table.holeSize * 0.8;
+                        if (distance < holeRadius + ball.radius) {
+                            ball.inHole = true;
+                            ball.vx = 0;
+                            ball.vy = 0;
+                        }
+                    });
+                });
+                
+                if (!anyMoving) break;
+            }
+            
+            return simBalls;
+        }
+
+        function simulateBallPhysics(ball, initialVelocity, speed) {
+            const trace = [];
+            let x = ball.x;
+            let y = ball.y;
+            let vx = initialVelocity.x * speed;
+            let vy = initialVelocity.y * speed;
+            
+            const steps = 100;
+            const dt = 0.2;
+            
+            for (let i = 0; i < steps; i++) {
+                // Apply friction
+                vx *= game.physics.friction;
+                vy *= game.physics.friction;
+                
+                // Update position
+                x += vx * dt;
+                y += vy * dt;
+                
+                // Check boundaries
+                const edgeSize = game.table.edgeSize;
+                if (x <= edgeSize + ball.radius || x >= game.table.width - edgeSize - ball.radius) {
+                    vx *= -game.physics.restitution;
+                    x = Math.max(edgeSize + ball.radius, Math.min(game.table.width - edgeSize - ball.radius, x));
+                }
+                if (y <= edgeSize + ball.radius || y >= game.table.height - edgeSize - ball.radius) {
+                    vy *= -game.physics.restitution;
+                    y = Math.max(edgeSize + ball.radius, Math.min(game.table.height - edgeSize - ball.radius, y));
+                }
+                
+                const currentSpeed = Math.sqrt(vx * vx + vy * vy);
+                trace.push({ x, y, speed: currentSpeed });
+                
+                if (currentSpeed < game.physics.minSpeed) break;
+            }
+            
+            return trace;
+        }
+
+        function showGhostBall(x, y, color) {
+            const table = document.getElementById('table');
+            const ghost = document.createElement('div');
+            ghost.className = 'ball-ghost';
+            ghost.style.left = (x - 10) + 'px';
+            ghost.style.top = (y - 10) + 'px';
+            ghost.style.width = '20px';
+            ghost.style.height = '20px';
+            ghost.style.background = color;
+            table.appendChild(ghost);
+        }
+
+        function clearTraces() {
+            const svg = document.getElementById('traces');
+            svg.innerHTML = '';
+            
+            const ghosts = document.querySelectorAll('.ball-ghost');
+            ghosts.forEach(ghost => ghost.remove());
+        }
+
+        function startAnimation() {
+            game.isAnimating = true;
+            document.getElementById('strokeButton').disabled = true;
+            
+            // Add moving class to all balls that will move
+            const allBalls = [game.cueBall, ...game.balls];
+            allBalls.forEach(ball => {
+                if (!ball.inHole) {
+                    ball.element.classList.add('moving');
+                    ball.element.classList.remove('stopped');
+                }
+            });
+            
+            animate();
+        }
+
+        function animate() {
+            let anyMoving = false;
+            
+            // Update cue ball
+            if (Math.abs(game.cueBall.vx) > game.physics.minSpeed || Math.abs(game.cueBall.vy) > game.physics.minSpeed) {
+                updateBallPhysics(game.cueBall);
+                anyMoving = true;
+            } else {
+                game.cueBall.vx = 0;
+                game.cueBall.vy = 0;
+            }
+            
+            // Update other balls
+            game.balls.forEach(ball => {
+                if (!ball.inHole && (Math.abs(ball.vx) > game.physics.minSpeed || Math.abs(ball.vy) > game.physics.minSpeed)) {
+                    updateBallPhysics(ball);
+                    anyMoving = true;
+                } else if (!ball.inHole) {
+                    ball.vx = 0;
+                    ball.vy = 0;
+                }
+            });
+            
+            // Check collisions
+            checkCollisions();
+            
+            // Check holes
+            checkHoles();
+            
+            if (anyMoving) {
+                requestAnimationFrame(animate);
+            } else {
+                // All balls stopped - add stopped class for smooth transitions
+                const allBalls = [game.cueBall, ...game.balls];
+                allBalls.forEach(ball => {
+                    if (!ball.inHole) {
+                        ball.element.classList.remove('moving');
+                        ball.element.classList.add('stopped');
+                    }
+                });
+                
+                setTimeout(() => {
+                    endTurn();
+                }, 100); // Small delay to ensure smooth visual transition
+            }
+        }
+
+        function updateBallPhysics(ball) {
+            // Apply friction
+            ball.vx *= game.physics.friction;
+            ball.vy *= game.physics.friction;
+            
+            // Update position with smoother movement
+            const speed = Math.sqrt(ball.vx * ball.vx + ball.vy * ball.vy);
+            const timeStep = Math.min(1.0, Math.max(0.3, speed / 10)); // Adaptive time step
+            
+            ball.x += ball.vx * timeStep;
+            ball.y += ball.vy * timeStep;
+            
+            // Boundary collisions
+            const edgeSize = game.table.edgeSize;
+            if (ball.x <= edgeSize + ball.radius) {
+                ball.x = edgeSize + ball.radius;
+                ball.vx *= -game.physics.restitution;
+            }
+            if (ball.x >= game.table.width - edgeSize - ball.radius) {
+                ball.x = game.table.width - edgeSize - ball.radius;
+                ball.vx *= -game.physics.restitution;
+            }
+            if (ball.y <= edgeSize + ball.radius) {
+                ball.y = edgeSize + ball.radius;
+                ball.vy *= -game.physics.restitution;
+            }
+            if (ball.y >= game.table.height - edgeSize - ball.radius) {
+                ball.y = game.table.height - edgeSize - ball.radius;
+                ball.vy *= -game.physics.restitution;
+            }
+            
+            // Update DOM element with smooth positioning
+            const targetX = ball.x - ball.radius;
+            const targetY = ball.y - ball.radius;
+            
+            ball.element.style.left = targetX + 'px';
+            ball.element.style.top = targetY + 'px';
+            
+            // Add rotation effect based on movement
+            if (speed > 1) {
+                const rotation = (Date.now() * speed * 0.01) % 360;
+                ball.element.style.transform = `rotate(${rotation}deg)`;
+            } else {
+                ball.element.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        function checkCollisions() {
+            const allBalls = [game.cueBall, ...game.balls.filter(b => !b.inHole)];
+            
+            for (let i = 0; i < allBalls.length; i++) {
+                for (let j = i + 1; j < allBalls.length; j++) {
+                    const ball1 = allBalls[i];
+                    const ball2 = allBalls[j];
+                    
+                    const dx = ball2.x - ball1.x;
+                    const dy = ball2.y - ball1.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < ball1.radius + ball2.radius) {
+                        // Collision detected - immediately separate balls to prevent overlap
+                        const overlap = ball1.radius + ball2.radius - distance;
+                        
+                        // Normalize direction vector
+                        const nx = dx / distance;
+                        const ny = dy / distance;
+                        
+                        // Separate balls completely to prevent any overlap
+                        const separationX = nx * overlap;
+                        const separationY = ny * overlap;
+                        
+                        // Move balls apart based on their velocities (faster ball moves less)
+                        const v1 = Math.sqrt(ball1.vx * ball1.vx + ball1.vy * ball1.vy);
+                        const v2 = Math.sqrt(ball2.vx * ball2.vx + ball2.vy * ball2.vy);
+                        const totalV = v1 + v2;
+                        
+                        let ratio1 = 0.5, ratio2 = 0.5;
+                        if (totalV > 0.1) {
+                            ratio1 = v2 / totalV;
+                            ratio2 = v1 / totalV;
+                        }
+                        
+                        ball1.x -= separationX * ratio1;
+                        ball1.y -= separationY * ratio1;
+                        ball2.x += separationX * ratio2;
+                        ball2.y += separationY * ratio2;
+                        
+                        // Update DOM elements immediately to prevent visual overlap
+                        ball1.element.style.left = (ball1.x - ball1.radius) + 'px';
+                        ball1.element.style.top = (ball1.y - ball1.radius) + 'px';
+                        ball2.element.style.left = (ball2.x - ball2.radius) + 'px';
+                        ball2.element.style.top = (ball2.y - ball2.radius) + 'px';
+                        
+                        // Calculate collision response with conservation of momentum
+                        const relativeVelocityX = ball2.vx - ball1.vx;
+                        const relativeVelocityY = ball2.vy - ball1.vy;
+                        
+                        // Dot product of relative velocity and normal
+                        const dotProduct = relativeVelocityX * nx + relativeVelocityY * ny;
+                        
+                        if (dotProduct > 0) continue; // Objects separating
+                        
+                        // Improved collision response with better energy conservation
+                        const impulse = 2 * dotProduct / 2 * game.physics.collisionDamping; // Equal masses
+                        
+                        ball1.vx += impulse * nx;
+                        ball1.vy += impulse * ny;
+                        ball2.vx -= impulse * nx;
+                        ball2.vy -= impulse * ny;
+                        
+                        // Add slight spin effect
+                        const tangentX = -ny;
+                        const tangentY = nx;
+                        const tangentDot1 = ball1.vx * tangentX + ball1.vy * tangentY;
+                        const tangentDot2 = ball2.vx * tangentX + ball2.vy * tangentY;
+                        
+                        const friction = 0.05; // Slight friction for spin effect
+                        ball1.vx += tangentX * tangentDot2 * friction;
+                        ball1.vy += tangentY * tangentDot2 * friction;
+                        ball2.vx += tangentX * tangentDot1 * friction;
+                        ball2.vy += tangentY * tangentDot1 * friction;
+                    }
+                }
+            }
+        }
+
+        function checkHoles() {
+            const holes = document.querySelectorAll('.hole');
+            const allBalls = [game.cueBall, ...game.balls];
+            
+            allBalls.forEach(ball => {
+                if (ball.inHole) return;
+                
+                holes.forEach(hole => {
+                    const holeRect = hole.getBoundingClientRect();
+                    const tableRect = document.getElementById('table').getBoundingClientRect();
+                    const holeX = holeRect.left - tableRect.left + holeRect.width / 2;
+                    const holeY = holeRect.top - tableRect.top + holeRect.height / 2;
+                    
+                    const dx = ball.x - holeX;
+                    const dy = ball.y - holeY;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    // Use a larger detection radius for holes to make them easier to hit
+                    // Also account for the actual ball size
+                    if (distance < (game.table.holeSize * 0.8 + ball.radius)) {
+                        // Ball in hole
+                        ball.inHole = true;
+                        ball.vx = 0;
+                        ball.vy = 0;
+                        
+                        // Animate ball falling into hole
+                        ball.element.style.transition = 'all 0.3s ease-in';
+                        ball.element.style.transform = 'scale(0.5)';
+                        ball.element.style.opacity = '0';
+                        
+                        setTimeout(() => {
+                            ball.element.style.display = 'none';
+                        }, 300);
+                        
+                        if (ball.isCue) {
+                            // Cue ball in hole - foul
+                            setTimeout(() => {
+                                resetCueBall();
+                            }, 500);
+                        } else {
+                            // Score point
+                            game.scores[game.currentPlayer - 1]++;
+                            updateUI();
+                        }
+                    }
+                });
+            });
+        }
+
+        function resetCueBall() {
+            game.cueBall.x = game.table.width * 0.25;
+            game.cueBall.y = game.table.height / 2;
+            game.cueBall.inHole = false;
+            game.cueBall.vx = 0;
+            game.cueBall.vy = 0;
+            game.cueBall.element.style.transition = 'all 0.5s ease-out';
+            game.cueBall.element.style.display = 'block';
+            game.cueBall.element.style.opacity = '1';
+            game.cueBall.element.style.transform = 'scale(1)';
+            game.cueBall.element.style.left = (game.cueBall.x - 10) + 'px';
+            game.cueBall.element.style.top = (game.cueBall.y - 10) + 'px';
+            
+            // Reset cue stick position after cue ball reset
+            setTimeout(() => {
+                if (!game.isAnimating) {
+                    // Default position is to the left of the cue ball
+                    const defaultX = game.cueBall.x - 100;
+                    const defaultY = game.cueBall.y;
+                    
+                    updateCueStickPosition(defaultX, defaultY);
+                }
+            }, 600);
+        }
+
+        function endTurn() {
+            game.isAnimating = false;
+            document.getElementById('strokeButton').disabled = false;
+            
+            // Show cue stick again when balls stop moving
+            setTimeout(() => {
+                if (!game.isAnimating) {
+                    const cueStick = document.getElementById('cueStick');
+                    cueStick.style.display = 'block';
+                }
+            }, 100);
+            
+            // Switch players
+            game.currentPlayer = game.currentPlayer === 1 ? 2 : 1;
+            updateUI();
+            
+            // Check win condition
+            const remainingBalls = game.balls.filter(b => !b.inHole).length;
+            if (remainingBalls === 0) {
+                alert(`Player ${game.currentPlayer === 1 ? 2 : 1} wins!`);
+                initGame(); // Restart game
+            }
+        }
+
+        function updatePower() {
+            game.power = document.getElementById('powerSlider').value;
+            document.getElementById('powerValue').textContent = game.power;
+        }
+
+        function changeGameMode() {
+            game.mode = document.querySelector('input[name="gameMode"]:checked').value;
+            setupBalls();
+        }
+
+        function changeDifficulty() {
+            game.difficulty = document.querySelector('input[name="difficulty"]:checked').value;
+        }
+
+        function updateTableColor() {
+            const color = document.getElementById('tableColor').value;
+            document.getElementById('table').style.background = color;
+        }
+
+        function updateEdgeColor() {
+            const color = document.getElementById('edgeColor').value;
+            document.querySelectorAll('.table-edge').forEach(edge => {
+                edge.style.background = color;
+            });
+        }
+
+        function updateHoleColor() {
+            const color = document.getElementById('holeColor').value;
+            document.querySelectorAll('.hole').forEach(hole => {
+                hole.style.background = color;
+            });
+        }
+
+        function updateEdgeSize() {
+            game.table.edgeSize = parseInt(document.getElementById('edgeSize').value);
+            document.getElementById('edgeSizeValue').textContent = game.table.edgeSize;
+            setupTable();
+        }
+
+        function updateHoleSize() {
+            game.table.holeSize = parseInt(document.getElementById('holeSize').value);
+            document.getElementById('holeSizeValue').textContent = game.table.holeSize;
+            setupTable();
+        }
+
+        function updateUI() {
+            document.getElementById('currentPlayer').textContent = `Player ${game.currentPlayer}'s Turn`;
+            document.getElementById('score1').textContent = game.scores[0];
+            document.getElementById('score2').textContent = game.scores[1];
+        }
+
+        // Initialize the game when the page loads
+        window.addEventListener('load', initGame);
+    </script>
+</body>
+</html>
