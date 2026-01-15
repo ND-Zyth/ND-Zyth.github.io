@@ -980,8 +980,6 @@
         <div id="topBar">
             <div class="tabsContainer">
                 <a href="#" class="tab activeTab" id="tab-main">Main</a>
-                <a href="#" class="tab" id="tab-tech">Tech Tree</a>
-                <a href="#" class="tab" id="tab-global-upgrades">Global Upgrades</a>
                 <a href="#" class="tab" id="tab-settings">Settings</a>
             </div>
             <div class="top-controls">
@@ -1120,13 +1118,9 @@
                 </label>
             </div>
             
-            <div class="toggle-container">
-                <span>Show all technologies:</span>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="show-all-tech-toggle">
-                    <span class="toggle-slider"></span>
-                </label>
-            </div>
+
+            
+
             
             <div class="anti-cheat-warning" style="margin: 20px 0;">
                 Time speed adjustments disabled to prevent cheating
@@ -1145,18 +1139,14 @@
             resources: {
                 copper: { name: "Copper", type: "solid", initial: 50, capacity: 100 },
                 iron: { name: "Iron", type: "solid", initial: 30, capacity: 100 },
-                water: { name: "Water", type: "liquid", initial: 100, capacity: 100 },
-                oil: { name: "Oil", type: "liquid", initial: 20, capacity: 100 },
+                water: { name: "Water", type: "liquid", initial: 0, capacity: 100 },
+                oil: { name: "Oil", type: "liquid", initial: 0, capacity: 100 },
                 electricity: { name: "Electricity", type: "electricity", initial: 0, capacity: 100 },
                 silicon: { name: "Silicon", type: "solid", initial: 0, capacity: 100 },
                 titanium: { name: "Titanium", type: "solid", initial: 0, capacity: 100 },
-                lead: { name: "Lead", type: "solid", initial: 0, capacity: 100 },
-                plastic: { name: "Plastic", type: "solid", initial: 0, capacity: 100 },
-                coal: { name: "Coal", type: "solid", initial: 20, capacity: 100 },
-                sand: { name: "Sand", type: "solid", initial: 50, capacity: 100 },
+                coal: { name: "Coal", type: "solid", initial: 0, capacity: 100 },
+                sand: { name: "Sand", type: "solid", initial: 0, capacity: 100 },
                 plastanium: { name: "Plastanium", type: "solid", initial: 0, capacity: 100 },
-                uranium: { name: "Uranium", type: "solid", initial: 0, capacity: 100 },
-                lithium: { name: "Lithium", type: "solid", initial: 0, capacity: 100 },
                 graphite: { name: "Graphite", type: "solid", initial: 0, capacity: 100 },
                 glass: { name: "Glass", type: "solid", initial: 0, capacity: 100 },
                 sporePod: { name: "Spore Pod", type: "solid", initial: 0, capacity: 100 },
@@ -1164,10 +1154,7 @@
                 cryofluid: { name: "Cryofluid", type: "liquid", initial: 0, capacity: 100 },
                 thorium: { name: "Thorium", type: "solid", initial: 0, capacity: 100 },
                 surgeAlloy: { name: "Surge Alloy", type: "solid", initial: 0, capacity: 100 },
-                phaseFabric: { name: "Phase Fabric", type: "solid", initial: 0, capacity: 100 },
-                steel: { name: "Steel", type: "solid", initial: 0, capacity: 100 },
-                gold: { name: "Gold", type: "solid", initial: 0, capacity: 100 },
-                researchPoints: { name: "Research Points", type: "special", initial: 0, capacity: 1000 }
+                phaseFabric: { name: "Phase Fabric", type: "solid", initial: 0, capacity: 100 }
             },
             
             factories: {
@@ -1295,16 +1282,6 @@
                     
                     productionModes: [
                         {
-                            id: "steel_production",
-                            name: "Steel Production",
-                            description: "Produce steel from iron and coal",
-                            inputs: { iron: 2, coal: 1, electricity: 0.8 },
-                            outputs: { steel: 0.8 },
-                            cycleTime: 10,
-                            basePower: 2,
-                            availableUpgrades: ["industrial_cooling", "smart_manufacturing", "quality_control"]
-                        },
-                        {
                             id: "glass_production",
                             name: "Glass Production",
                             description: "Produce glass from sand",
@@ -1357,7 +1334,7 @@
                     
                     investigationCost: { copper: 120, iron: 60 },
                     researchTime: 25,
-                    buildCost: { copper: 180, iron: 120, steel: 30 },
+                    buildCost: { copper: 180, iron: 120 },
                     capacityAdditions: { solid: 120, electricity: 30 },
                     prerequisites: ["mechanicalDrill"]
                 },
@@ -1397,7 +1374,7 @@
                             name: "High Pressure Turbines",
                             description: "Advanced turbine system",
                             type: "normal",
-                            requiredInputs: { steel: 0.05 },
+                            requiredInputs: {},
                             effects: { outputMultiplier: 1.6, powerIncrease: 0 }
                         },
                         emission_control: {
@@ -1431,7 +1408,7 @@
                     
                     investigationCost: { copper: 60, iron: 30 },
                     researchTime: 12,
-                    buildCost: { copper: 100, iron: 50, steel: 20 },
+                    buildCost: { copper: 100, iron: 50 },
                     capacityAdditions: { electricity: 150 },
                     prerequisites: ["mechanicalDrill"]
                 },
@@ -1488,7 +1465,7 @@
                             name: "Deep Well Pumping",
                             description: "Access deeper water sources",
                             type: "normal",
-                            requiredInputs: { steel: 0.1 },
+                            requiredInputs: {},
                             effects: { outputMultiplier: 1.8, powerIncrease: 0.3 }
                         },
                         filtration: {
@@ -1515,7 +1492,7 @@
                     
                     investigationCost: { copper: 25, iron: 15 },
                     researchTime: 9,
-                    buildCost: { copper: 40, iron: 20, steel: 5 },
+                    buildCost: { copper: 40, iron: 20 },
                     capacityAdditions: { liquid: 100 },
                     prerequisites: ["mechanicalDrill"]
                 },
@@ -1643,13 +1620,13 @@
                     
                     productionModes: [
                         {
-                            id: "metaglass_production",
-                            name: "Metaglass Production",
-                            description: "Produce metaglass from sand and lead",
-                            inputs: { sand: 2, lead: 2, electricity: 0.8 },
+                            id: "glass_production",
+                            name: "Glass Production",
+                            description: "Produce glass from sand",
+                            inputs: { sand: 3, electricity: 0.5 },
                             outputs: { glass: 1 },
-                            cycleTime: 6,
-                            basePower: 1.2,
+                            cycleTime: 7,
+                            basePower: 1.5,
                             availableUpgrades: ["water_cooling", "advanced_tempering", "efficiency_upgrades"]
                         }
                     ],
@@ -1881,7 +1858,7 @@
                     
                     investigationCost: { copper: 150, iron: 80, water: 100 },
                     researchTime: 25,
-                    buildCost: { copper: 250, iron: 150, steel: 50 },
+                    buildCost: { copper: 250, iron: 150 },
                     capacityAdditions: { liquid: 150 },
                     prerequisites: ["mechanicalDrill", "waterPump"]
                 },
@@ -1929,7 +1906,7 @@
                         }
                     },
                     
-                    investigationCost: { water: 200, researchPoints: 50 },
+                    investigationCost: { water: 200, copper: 100 },
                     researchTime: 15,
                     buildCost: { copper: 200, iron: 120, water: 100 },
                     capacityAdditions: { solid: 100 },
@@ -1948,7 +1925,7 @@
                             id: "blast_compound_production",
                             name: "Blast Compound Production",
                             description: "Produce blast compound using multiple ingredients",
-                            inputs: { sporePod: 1, water: 1, sand: 2, coal: 2, lead: 1, electricity: 1.5 },
+                            inputs: { sporePod: 1, water: 1, sand: 2, coal: 2, electricity: 1.5 },
                             outputs: { blastCompound: 1.5 },
                             cycleTime: 15,
                             basePower: 3.0,
@@ -1986,9 +1963,9 @@
                         }
                     },
                     
-                    investigationCost: { sporePod: 10, water: 50, sand: 100, coal: 100, lead: 50 },
+                    investigationCost: { sporePod: 10, water: 50, sand: 100, coal: 100 },
                     researchTime: 20,
-                    buildCost: { copper: 400, iron: 300, steel: 100 },
+                    buildCost: { copper: 400, iron: 300 },
                     capacityAdditions: { solid: 200 },
                     prerequisites: ["sporePodFarm", "graphitePress", "metaglassFactory"]
                 },
@@ -2198,7 +2175,7 @@
                         }
                     },
                     
-                    investigationCost: { blastCompound: 50, cryofluid: 30, researchPoints: 200 },
+                    investigationCost: { blastCompound: 50, cryofluid: 30, copper: 300 },
                     researchTime: 35,
                     buildCost: { copper: 800, iron: 600, blastCompound: 40, cryofluid: 20 },
                     capacityAdditions: { solid: 120 },
@@ -2217,7 +2194,7 @@
                             id: "surge_alloy_production",
                             name: "Surge Alloy Production",
                             description: "Produce high-grade surge alloy",
-                            inputs: { silicon: 2, lead: 3, copper: 3, titanium: 2, electricity: 3.0 },
+                            inputs: { silicon: 2, copper: 3, titanium: 2, electricity: 3.0 },
                             outputs: { surgeAlloy: 1.0 },
                             cycleTime: 20,
                             basePower: 4.0,
@@ -2255,9 +2232,9 @@
                         }
                     },
                     
-                    investigationCost: { silicon: 100, lead: 100, copper: 100, titanium: 50 },
+                    investigationCost: { silicon: 100, copper: 100, titanium: 50 },
                     researchTime: 40,
-                    buildCost: { copper: 1200, iron: 800, silicon: 200, lead: 150, copper: 150, titanium: 100 },
+                    buildCost: { copper: 1200, iron: 800, silicon: 200, copper: 150, titanium: 100 },
                     capacityAdditions: { solid: 200 },
                     prerequisites: ["blastDrill", "cryofluidMixer"]
                 },
@@ -2312,12 +2289,14 @@
                         }
                     },
                     
-                    investigationCost: { titanium: 80, oil: 100, water: 100 },
+                    investigationCost: { titanium: 80, oil: 100, water: 100, copper: 200, researchPoints: 150 },
                     researchTime: 30,
                     buildCost: { copper: 1000, iron: 700, titanium: 80, oil: 100, water: 100 },
                     capacityAdditions: { solid: 150 },
                     prerequisites: ["oilExtractor", "pneumaticDrill"]
                 },
+                    
+
                 
                 phaseWeaver: {
                     name: "Phase Fabric Weaver",
@@ -2483,7 +2462,7 @@
                         }
                     },
                     
-                    investigationCost: { surgeAlloy: 50, plastanium: 30, phaseFabric: 20, researchPoints: 500 },
+                    investigationCost: { surgeAlloy: 50, plastanium: 30, phaseFabric: 20, copper: 500 },
                     researchTime: 50,
                     buildCost: { copper: 2000, iron: 1500, surgeAlloy: 100, plastanium: 80, phaseFabric: 50 },
                     capacityAdditions: { solid: 300 },
@@ -2522,7 +2501,7 @@
                             name: "Advanced Vents",
                             description: "Better heat management",
                             type: "normal",
-                            requiredInputs: { steel: 0.05 },
+                            requiredInputs: {},
                             effects: { outputMultiplier: 1.3, powerIncrease: 0.1 }
                         },
                         efficiency_upgrades: {
@@ -2572,7 +2551,7 @@
                             name: "High Pressure Turbines",
                             description: "Advanced turbine system",
                             type: "normal",
-                            requiredInputs: { steel: 0.05 },
+                            requiredInputs: {},
                             effects: { outputMultiplier: 1.6, powerIncrease: 0 }
                         },
                         water_efficiency: {
@@ -2599,67 +2578,12 @@
                     
                     investigationCost: { copper: 150, iron: 80, water: 50 },
                     researchTime: 20,
-                    buildCost: { copper: 250, iron: 200, steel: 50 },
+                    buildCost: { copper: 250, iron: 200 },
                     capacityAdditions: { electricity: 300 },
                     prerequisites: ["waterPump", "powerPlant"]
                 },
                 
-                rtg: {
-                    name: "RTG Generator",
-                    description: "Radioisotope Thermoelectric Generator providing steady power",
-                    type: "generator",
-                    tags: ["power", "energy", "generation", "advanced"],
-                    flexible: true,
-                    
-                    productionModes: [
-                        {
-                            id: "rtg_power",
-                            name: "RTG Power",
-                            description: "Generate steady electricity using radioactive materials",
-                            inputs: { uranium: 0.05 },
-                            outputs: { electricity: 3 },
-                            cycleTime: 2,
-                            basePower: 0,
-                            availableUpgrades: ["uranium_efficiency", "advanced_thermocouples", "efficiency_upgrades"]
-                        }
-                    ],
-                    
-                    upgrades: {
-                        uranium_efficiency: {
-                            name: "Uranium Efficiency",
-                            description: "Improved uranium usage",
-                            type: "normal",
-                            requiredInputs: { uranium: 0.02 },
-                            effects: { outputMultiplier: 1.5, powerIncrease: 0 }
-                        },
-                        advanced_thermocouples: {
-                            name: "Advanced Thermocouples",
-                            description: "Better heat-to-electricity conversion",
-                            type: "normal",
-                            requiredInputs: { silicon: 0.1 },
-                            effects: { outputMultiplier: 1.4, powerIncrease: 0.1 }
-                        },
-                        efficiency_upgrades: {
-                            name: "Efficiency Upgrades",
-                            description: "Improves overall efficiency",
-                            type: "script",
-                            requiredInputs: { electricity: 0.2, silicon: 0.05 },
-                            effects: { 
-                                script: `function(context) {
-                                    const uraniumBonus = Math.min(context.gameState.resources.uranium * 0.02, 0.4);
-                                    return 1.2 + uraniumBonus;
-                                }`,
-                                powerIncrease: 0.1
-                            }
-                        }
-                    },
-                    
-                    investigationCost: { uranium: 30, researchPoints: 100 },
-                    researchTime: 25,
-                    buildCost: { copper: 400, iron: 300, uranium: 50 },
-                    capacityAdditions: { electricity: 180 },
-                    prerequisites: ["advancedManufacturing"]
-                },
+
                 
                 thoriumReactor: {
                     name: "Thorium Reactor",
@@ -2711,9 +2635,9 @@
                         }
                     },
                     
-                    investigationCost: { thorium: 50, researchPoints: 200 },
+                    investigationCost: { thorium: 50, copper: 200 },
                     researchTime: 35,
-                    buildCost: { copper: 1000, iron: 800, thorium: 100, steel: 150 },
+                    buildCost: { copper: 1000, iron: 800, thorium: 100 },
                     capacityAdditions: { electricity: 700 },
                     prerequisites: ["blastDrill", "waterPump"]
                 },
@@ -2768,9 +2692,9 @@
                         }
                     },
                     
-                    investigationCost: { blastCompound: 30, researchPoints: 250 },
+                    investigationCost: { blastCompound: 30, copper: 300 },
                     researchTime: 40,
-                    buildCost: { copper: 1500, iron: 1200, blastCompound: 50, steel: 200 },
+                    buildCost: { copper: 1500, iron: 1200, blastCompound: 50 },
                     capacityAdditions: { electricity: 1800 },
                     prerequisites: ["blastCompoundFactory", "advancedManufacturing"]
                 },
@@ -2825,9 +2749,9 @@
                         }
                     },
                     
-                    investigationCost: { surgeAlloy: 20, researchPoints: 300 },
+                    investigationCost: { surgeAlloy: 20, copper: 350 },
                     researchTime: 45,
-                    buildCost: { copper: 2000, iron: 1500, surgeAlloy: 100, steel: 300 },
+                    buildCost: { copper: 2000, iron: 1500, surgeAlloy: 100 },
                     capacityAdditions: { electricity: 800 },
                     prerequisites: ["alloyFactory", "thoriumReactor"]
                 },
@@ -2864,7 +2788,7 @@
                             name: "Heat Extraction",
                             description: "Advanced heat extraction",
                             type: "normal",
-                            requiredInputs: { steel: 0.1 },
+                            requiredInputs: {},
                             effects: { outputMultiplier: 1.5, powerIncrease: 0.1 }
                         },
                         efficiency_upgrades: {
@@ -2882,9 +2806,9 @@
                         }
                     },
                     
-                    investigationCost: { steel: 100, researchPoints: 150 },
+                    investigationCost: { copper: 200, iron: 100 },
                     researchTime: 30,
-                    buildCost: { copper: 800, iron: 600, steel: 350 },
+                    buildCost: { copper: 800, iron: 600 },
                     capacityAdditions: { electricity: 400 },
                     prerequisites: ["advancedManufacturing", "waterPump"]
                 },
@@ -2996,11 +2920,67 @@
                         }
                     },
                     
-                    investigationCost: { iron: 100, researchPoints: 50 },
+                    investigationCost: { iron: 100, copper: 150 },
                     researchTime: 15,
-                    buildCost: { copper: 200, iron: 150, steel: 50 },
+                    buildCost: { copper: 200, iron: 150 },
                     capacityAdditions: { electricity: 200 },
                     prerequisites: ["advancedManufacturing"]
+                },
+                
+                solidWarehouse: {
+                    name: "Solid Warehouse",
+                    description: "Basic storage facility for solid resources",
+                    type: "storage",
+                    tags: ["storage", "basic", "warehouse"],
+                    flexible: false,
+                    
+                    investigationCost: { copper: 30, iron: 20 },
+                    researchTime: 8,
+                    buildCost: { copper: 50, iron: 40 },
+                    capacityAdditions: { solid: 100 },
+                    prerequisites: ["basicMining"]
+                },
+                
+                liquidWarehouse: {
+                    name: "Liquid Warehouse",
+                    description: "Basic storage facility for liquid resources",
+                    type: "storage",
+                    tags: ["storage", "basic", "warehouse"],
+                    flexible: false,
+                    
+                    investigationCost: { copper: 40, iron: 30, water: 50 },
+                    researchTime: 10,
+                    buildCost: { copper: 60, iron: 50, water: 30 },
+                    capacityAdditions: { liquid: 100 },
+                    prerequisites: ["waterManagement"]
+                },
+                
+                compressedSolidWarehouse: {
+                    name: "Compressed Solid Warehouse",
+                    description: "Advanced storage facility with high capacity for solid resources",
+                    type: "storage",
+                    tags: ["storage", "advanced", "warehouse", "compressed"],
+                    flexible: false,
+                    
+                    investigationCost: { copper: 500, iron: 400, phaseFabric: 50 },
+                    researchTime: 50,
+                    buildCost: { copper: 800, iron: 600, phaseFabric: 20, surgeAlloy: 50 },
+                    capacityAdditions: { solid: 800 },
+                    prerequisites: ["basicWarehousing", "phaseWeaving"]
+                },
+                
+                compressedLiquidWarehouse: {
+                    name: "Compressed Liquid Warehouse",
+                    description: "Advanced storage facility with high capacity for liquid resources",
+                    type: "storage",
+                    tags: ["storage", "advanced", "warehouse", "compressed"],
+                    flexible: false,
+                    
+                    investigationCost: { copper: 800, iron: 500, phaseFabric: 60, electricity: 400 },
+                    researchTime: 55,
+                    buildCost: { copper: 900, iron: 700, phaseFabric: 25, surgeAlloy: 60 },
+                    capacityAdditions: { liquid: 800 },
+                    prerequisites: ["basicWarehousing", "phaseWeaving"]
                 }
             },
             
@@ -3011,7 +2991,7 @@
                     name: "Mining Efficiency I",
                     description: "Improves efficiency of all mining operations",
                     tags: ["mining", "extraction"],
-                    cost: { researchPoints: 100 },
+                    cost: { copper: 150 },
                     researchTime: 10,
                     prerequisites: [],
                     effect: {
@@ -3029,7 +3009,7 @@
                     name: "Mining Efficiency II",
                     description: "Advanced mining optimization techniques",
                     tags: ["mining", "extraction"],
-                    cost: { researchPoints: 250, silicon: 50 },
+                    cost: { copper: 300, silicon: 50 },
                     researchTime: 20,
                     prerequisites: ["miningEfficiency1"],
                     effect: {
@@ -3047,7 +3027,7 @@
                     name: "Power Optimization I",
                     description: "Improves efficiency of all power generation",
                     tags: ["power", "energy"],
-                    cost: { researchPoints: 150, electricity: 200 },
+                    cost: { copper: 200, electricity: 200 },
                     researchTime: 15,
                     prerequisites: [],
                     effect: {
@@ -3062,7 +3042,7 @@
                     name: "Power Optimization II",
                     description: "Advanced power grid management",
                     tags: ["power", "energy"],
-                    cost: { researchPoints: 400, silicon: 100, titanium: 50 },
+                    cost: { copper: 500, silicon: 100, titanium: 50 },
                     researchTime: 30,
                     prerequisites: ["powerOptimization1"],
                     effect: {
@@ -3080,7 +3060,7 @@
                     name: "Industrial Automation I",
                     description: "Automates manufacturing processes",
                     tags: ["manufacturing", "processing", "industrial"],
-                    cost: { researchPoints: 200, steel: 100 },
+                    cost: { copper: 250, iron: 100 },
                     researchTime: 18,
                     prerequisites: [],
                     effect: {
@@ -3095,7 +3075,7 @@
                     name: "Industrial Automation II",
                     description: "Advanced robotic manufacturing",
                     tags: ["manufacturing", "processing", "industrial"],
-                    cost: { researchPoints: 500, silicon: 200, titanium: 100 },
+                    cost: { copper: 600, silicon: 200, titanium: 100 },
                     researchTime: 35,
                     prerequisites: ["industrialAutomation1"],
                     effect: {
@@ -3113,7 +3093,7 @@
                     name: "Utility Efficiency",
                     description: "Improves all utility operations",
                     tags: ["utility", "basic"],
-                    cost: { researchPoints: 120 },
+                    cost: { copper: 180 },
                     researchTime: 12,
                     prerequisites: [],
                     effect: {
@@ -3128,7 +3108,7 @@
                     name: "Adaptive Systems",
                     description: "Improves all versatile factories",
                     tags: ["versatile"],
-                    cost: { researchPoints: 300, silicon: 150 },
+                    cost: { copper: 400, silicon: 150 },
                     researchTime: 25,
                     prerequisites: [],
                     effect: {
@@ -3147,7 +3127,7 @@
                     name: "Quantum Optimization",
                     description: "Applies quantum computing to all advanced factories",
                     tags: ["advanced", "science"],
-                    cost: { researchPoints: 1000, silicon: 500, titanium: 200 },
+                    cost: { copper: 1200, silicon: 500, titanium: 200 },
                     researchTime: 60,
                     prerequisites: ["industrialAutomation2", "miningEfficiency2"],
                     effect: {
@@ -3166,7 +3146,7 @@
                     name: "Universal Efficiency",
                     description: "Improves efficiency of all factories",
                     tags: ["*"],
-                    cost: { researchPoints: 2000, electricity: 1000, silicon: 300 },
+                    cost: { copper: 2200, electricity: 1000, silicon: 300 },
                     researchTime: 90,
                     prerequisites: ["quantumOptimization", "powerOptimization2"],
                     effect: {
@@ -3262,11 +3242,11 @@
                     ]
                 },
                 
-                metaglassProduction: {
-                    id: "metaglassProduction",
-                    name: "Metaglass Production",
-                    description: "Learn to produce metaglass from sand and lead",
-                    cost: { copper: 70, iron: 40, sand: 80, lead: 40 },
+                glassProduction: {
+                    id: "glassProduction",
+                    name: "Glass Production",
+                    description: "Learn to produce glass from sand",
+                    cost: { copper: 70, iron: 40, sand: 80 },
                     researchTime: 10,
                     prerequisites: ["basicMining"],
                     effects: [
@@ -3305,7 +3285,7 @@
                     id: "sporeCultivation",
                     name: "Spore Cultivation",
                     description: "Learn to cultivate spore pods using water",
-                    cost: { water: 100, researchPoints: 30 },
+                    cost: { water: 100, copper: 50 },
                     researchTime: 12,
                     prerequisites: ["waterManagement"],
                     effects: [
@@ -3318,9 +3298,9 @@
                     id: "blastCompoundTech",
                     name: "Blast Compound Technology",
                     description: "Learn to produce blast compound from multiple ingredients",
-                    cost: { sporePod: 15, water: 50, sand: 100, coal: 100, lead: 50 },
+                    cost: { sporePod: 15, water: 50, sand: 100, coal: 100, copper: 150 },
                     researchTime: 20,
-                    prerequisites: ["sporeCultivation", "graphitePressTech", "metaglassProduction"],
+                    prerequisites: ["sporeCultivation", "graphitePressTech", "glassProduction"],
                     effects: [
                         { type: "unlock", target: "blastCompoundFactory" },
                         { type: "tagBoost", targetTag: "explosives", effect: { outputMultiplier: 1.2 } }
@@ -3331,7 +3311,7 @@
                     id: "cryofluidMixing",
                     name: "Cryofluid Mixing",
                     description: "Learn to produce cryofluid from water and titanium",
-                    cost: { water: 100, titanium: 20, researchPoints: 100 },
+                    cost: { water: 100, titanium: 20, copper: 200, iron: 80 },
                     researchTime: 25,
                     prerequisites: ["pneumaticDrilling"],
                     effects: [
@@ -3344,7 +3324,7 @@
                     id: "blastDrilling",
                     name: "Blast Drilling",
                     description: "Advanced drilling using explosives and cooling",
-                    cost: { blastCompound: 50, cryofluid: 30, researchPoints: 150 },
+                    cost: { blastCompound: 50, cryofluid: 30, copper: 300, titanium: 100 },
                     researchTime: 30,
                     prerequisites: ["blastCompoundTech", "cryofluidMixing", "pneumaticDrilling"],
                     effects: [
@@ -3357,7 +3337,7 @@
                     id: "alloyProduction",
                     name: "Alloy Production",
                     description: "Learn to produce high-grade surge alloy",
-                    cost: { silicon: 100, lead: 100, copper: 100, titanium: 50, researchPoints: 200 },
+                    cost: { silicon: 100, copper: 200, titanium: 100, iron: 150 },
                     researchTime: 35,
                     prerequisites: ["blastDrilling", "cryofluidMixing"],
                     effects: [
@@ -3370,7 +3350,7 @@
                     id: "plastaniumTech",
                     name: "Plastanium Technology",
                     description: "Learn to produce plastanium from titanium, oil and water",
-                    cost: { titanium: 80, oil: 100, water: 100, researchPoints: 150 },
+                    cost: { titanium: 80, oil: 100, water: 100, copper: 250, silicon: 80 },
                     researchTime: 25,
                     prerequisites: ["oilExtraction", "pneumaticDrilling"],
                     effects: [
@@ -3383,7 +3363,7 @@
                     id: "phaseWeaving",
                     name: "Phase Weaving",
                     description: "Learn to weave phase fabric from water, thorium and sand",
-                    cost: { water: 150, thorium: 50, sand: 200, researchPoints: 250 },
+                    cost: { water: 150, thorium: 50, sand: 200, copper: 400, silicon: 100 },
                     researchTime: 30,
                     prerequisites: ["alloyProduction", "blastDrilling"],
                     effects: [
@@ -3396,7 +3376,7 @@
                     id: "laserDrilling",
                     name: "Laser Drilling",
                     description: "Advanced laser technology for mining",
-                    cost: { surgeAlloy: 50, plastanium: 30, phaseFabric: 20, researchPoints: 400 },
+                    cost: { surgeAlloy: 50, plastanium: 30, phaseFabric: 20, copper: 600, electricity: 500 },
                     researchTime: 40,
                     prerequisites: ["alloyProduction", "plastaniumTech", "phaseWeaving"],
                     effects: [
@@ -3422,7 +3402,7 @@
                     id: "turbineTech",
                     name: "Turbine Technology",
                     description: "Advanced turbine generator",
-                    cost: { copper: 150, iron: 100, water: 50, researchPoints: 50 },
+                    cost: { copper: 200, iron: 150, water: 50 },
                     researchTime: 18,
                     prerequisites: ["waterManagement", "powerGeneration"],
                     effects: [
@@ -3431,24 +3411,13 @@
                     ]
                 },
                 
-                rtgTech: {
-                    id: "rtgTech",
-                    name: "RTG Technology",
-                    description: "Radioisotope Thermoelectric Generator",
-                    cost: { uranium: 30, researchPoints: 100 },
-                    researchTime: 20,
-                    prerequisites: ["advancedManufacturing"],
-                    effects: [
-                        { type: "unlock", target: "rtg" },
-                        { type: "tagBoost", targetTag: "power", effect: { outputMultiplier: 1.15 } }
-                    ]
-                },
+
                 
                 thoriumReactorTech: {
                     id: "thoriumReactorTech",
                     name: "Thorium Reactor Technology",
                     description: "High-output thorium reactor",
-                    cost: { thorium: 50, researchPoints: 200 },
+                    cost: { thorium: 50, copper: 300, iron: 200 },
                     researchTime: 30,
                     prerequisites: ["blastDrilling", "waterManagement"],
                     effects: [
@@ -3461,7 +3430,7 @@
                     id: "blastFurnaceTech",
                     name: "Blast Furnace Technology",
                     description: "High-output blast furnace",
-                    cost: { blastCompound: 30, researchPoints: 250 },
+                    cost: { blastCompound: 30, copper: 400, iron: 300 },
                     researchTime: 35,
                     prerequisites: ["blastCompoundTech", "advancedManufacturing"],
                     effects: [
@@ -3474,7 +3443,7 @@
                     id: "alloyImpactorTech",
                     name: "Alloy Impactor Technology",
                     description: "High-output generator using surge alloy",
-                    cost: { surgeAlloy: 20, researchPoints: 300 },
+                    cost: { surgeAlloy: 20, copper: 500, iron: 400 },
                     researchTime: 40,
                     prerequisites: ["alloyProduction", "thoriumReactorTech"],
                     effects: [
@@ -3487,7 +3456,7 @@
                     id: "geothermalTech",
                     name: "Geothermal Technology",
                     description: "Generate power from geothermal energy",
-                    cost: { steel: 100, researchPoints: 150 },
+                    cost: { copper: 200, iron: 100 },
                     researchTime: 25,
                     prerequisites: ["advancedManufacturing", "waterManagement"],
                     effects: [
@@ -3522,12 +3491,40 @@
                     ]
                 },
                 
+                basicWarehousing: {
+                    id: "basicWarehousing",
+                    name: "Basic Warehousing",
+                    description: "Unlock basic storage solutions for resources",
+                    cost: { copper: 100, iron: 60, researchPoints: 150 },
+                    researchTime: 15,
+                    prerequisites: ["basicMining"],
+                    effects: [
+                        { type: "unlock", target: "solidWarehouse" },
+                        { type: "unlock", target: "liquidWarehouse" },
+                        { type: "tagBoost", targetTag: "storage", effect: { capacityMultiplier: 1.1 } }
+                    ]
+                },
+                
+                advancedWarehousing: {
+                    id: "advancedWarehousing",
+                    name: "Advanced Warehousing",
+                    description: "Unlock compressed storage solutions with higher capacity",
+                    cost: { copper: 500, iron: 400, phaseFabric: 50, researchPoints: 300 },
+                    researchTime: 45,
+                    prerequisites: ["basicWarehousing", "phaseWeaving"],
+                    effects: [
+                        { type: "unlock", target: "compressedSolidWarehouse" },
+                        { type: "unlock", target: "compressedLiquidWarehouse" },
+                        { type: "tagBoost", targetTag: "storage", effect: { capacityMultiplier: 1.3 } }
+                    ]
+                },
+                
                 miningEfficiency3: {
                     id: "miningEfficiency3",
                     name: "Advanced Mining Efficiency",
                     description: "Further improves efficiency of all mining operations",
                     tags: ["mining", "extraction"],
-                    cost: { researchPoints: 600, silicon: 200, surgeAlloy: 100 },
+                    cost: { copper: 800, silicon: 200, surgeAlloy: 100, iron: 300 },
                     researchTime: 40,
                     prerequisites: ["miningEfficiency2", "alloyProduction"],
                     effect: {
@@ -3547,7 +3544,7 @@
                     name: "Expert Mining Efficiency",
                     description: "Expert level mining optimization techniques",
                     tags: ["mining", "extraction"],
-                    cost: { researchPoints: 1000, silicon: 400, surgeAlloy: 200, phaseFabric: 100 },
+                    cost: { copper: 1200, silicon: 400, surgeAlloy: 200, phaseFabric: 100 },
                     researchTime: 60,
                     prerequisites: ["miningEfficiency3", "phaseWeaving"],
                     effect: {
@@ -3566,7 +3563,7 @@
                     name: "Advanced Power Optimization",
                     description: "Improves efficiency of all power generation",
                     tags: ["power", "energy"],
-                    cost: { researchPoints: 800, silicon: 300, surgeAlloy: 150 },
+                    cost: { copper: 1000, silicon: 300, surgeAlloy: 150, iron: 400 },
                     researchTime: 50,
                     prerequisites: ["powerOptimization2", "alloyProduction"],
                     effect: {
@@ -3585,15 +3582,65 @@
                 solid: 100,
                 liquid: 100,
                 electricity: 100,
-                special: 1000
+                special: 100
             },
             
             settings: {
                 autoActivateFactories: true,
-                showAllResources: false,
-                showAllTech: false
+                showAllResources: false
             }
         };
+
+        // Import game
+        function importGame() {
+            document.getElementById('import-modal').style.display = 'block';
+        }
+
+        // Confirm import
+        function confirmImport() {
+            const importData = document.getElementById('import-data').value.trim();
+            
+            if (!importData) {
+                showNotification("No import data provided!");
+                document.getElementById('import-modal').style.display = 'none';
+                return;
+            }
+            
+            try {
+                const decoded = atob(importData);
+                const importedState = JSON.parse(decoded);
+                
+                if (importedState.version === gameState.version) {
+                    if (importedState.resourcesEverOwned) {
+                        gameState.resourcesEverOwned = new Set(importedState.resourcesEverOwned);
+                    }
+                    
+                    if (importedState.expandedFactoryPanels) {
+                        gameState.expandedFactoryPanels = new Set(importedState.expandedFactoryPanels);
+                    }
+                    
+                    Object.assign(gameState, importedState);
+                    
+                    // Ensure all arrays exist
+                    for (const key in gameData.factories) {
+                        if (!gameState.factoryAllocations[key]) gameState.factoryAllocations[key] = {};
+                    }
+                    
+                    gameState.antiCheat.lastTickTime = Date.now();
+                    AntiCheat.resetViolations();
+                    
+                    showNotification("Game data imported successfully!");
+                    updateUI();
+                    saveGame();
+                } else {
+                    showNotification("Import failed: Version mismatch!");
+                }
+            } catch (e) {
+                showNotification("Import failed: Invalid data!");
+            }
+            
+            document.getElementById('import-modal').style.display = 'none';
+        }
 
         // Game State (same as before)
         let gameState = {
@@ -3730,16 +3777,6 @@
                 setActiveMainTab('main');
             });
             
-            document.getElementById('tab-tech').addEventListener('click', (e) => {
-                e.preventDefault();
-                setActiveMainTab('tech');
-            });
-            
-            document.getElementById('tab-global-upgrades').addEventListener('click', (e) => {
-                e.preventDefault();
-                setActiveMainTab('global-upgrades');
-            });
-            
             document.getElementById('tab-settings').addEventListener('click', (e) => {
                 e.preventDefault();
                 openSettings();
@@ -3790,178 +3827,7 @@
             if (tabName === 'main') {
                 document.getElementById('tab-main').classList.add('activeTab');
                 document.getElementById('game').style.display = 'block';
-                document.getElementById('tech-tree-view').style.display = 'none';
-                document.getElementById('global-upgrades-view').style.display = 'none';
-            } else if (tabName === 'tech') {
-                document.getElementById('tab-tech').classList.add('activeTab');
-                document.getElementById('game').style.display = 'none';
-                if (!document.getElementById('tech-tree-view')) {
-                    createTechTreeView();
-                }
-                document.getElementById('tech-tree-view').style.display = 'block';
-                document.getElementById('global-upgrades-view').style.display = 'none';
-            } else if (tabName === 'global-upgrades') {
-                document.getElementById('tab-global-upgrades').classList.add('activeTab');
-                document.getElementById('game').style.display = 'none';
-                if (!document.getElementById('global-upgrades-view')) {
-                    createGlobalUpgradesView();
-                }
-                document.getElementById('global-upgrades-view').style.display = 'block';
-                document.getElementById('tech-tree-view').style.display = 'none';
             }
-        }
-
-        // Create tech tree view
-        function createTechTreeView() {
-            const techTreeDiv = document.createElement('div');
-            techTreeDiv.id = 'tech-tree-view';
-            techTreeDiv.style.display = 'none';
-            techTreeDiv.style.position = 'absolute';
-            techTreeDiv.style.top = '40px';
-            techTreeDiv.style.left = '0';
-            techTreeDiv.style.width = '100%';
-            techTreeDiv.style.height = 'calc(100% - 40px)';
-            techTreeDiv.style.overflow = 'auto';
-            techTreeDiv.style.backgroundColor = 'white';
-            techTreeDiv.style.padding = '20px';
-            
-            document.getElementById('gamePageContainer').appendChild(techTreeDiv);
-        }
-
-        // Create global upgrades view
-        function createGlobalUpgradesView() {
-            const upgradesDiv = document.createElement('div');
-            upgradesDiv.id = 'global-upgrades-view';
-            upgradesDiv.style.display = 'none';
-            upgradesDiv.style.position = 'absolute';
-            upgradesDiv.style.top = '40px';
-            upgradesDiv.style.left = '0';
-            upgradesDiv.style.width = '100%';
-            upgradesDiv.style.height = 'calc(100% - 40px)';
-            upgradesDiv.style.overflow = 'auto';
-            upgradesDiv.style.backgroundColor = 'white';
-            upgradesDiv.style.padding = '20px';
-            
-            document.getElementById('gamePageContainer').appendChild(upgradesDiv);
-        }
-
-        // Update tech tree view
-        function updateTechTreeView() {
-            const techTreeView = document.getElementById('tech-tree-view');
-            if (!techTreeView) return;
-            
-            techTreeView.innerHTML = '<h2>Tech Tree</h2>';
-            
-            for (const [techId, tech] of Object.entries(gameData.techTree)) {
-                const isResearched = gameState.techResearched[techId];
-                const isResearching = gameState.techResearching === techId;
-                const canResearch = canResearchTech(techId);
-                
-                const node = document.createElement('div');
-                node.className = `global-upgrade-item ${isResearched ? 'researched' : isResearching ? 'researching' : canResearch ? '' : 'locked'}`;
-                node.dataset.techId = techId;
-                
-                let costText = 'Cost: ';
-                for (const [resource, amount] of Object.entries(tech.cost)) {
-                    costText += `${amount} ${gameData.resources[resource]?.name || resource}, `;
-                }
-                costText = costText.slice(0, -2);
-                
-                node.innerHTML = `
-                    <div class="global-upgrade-name">${tech.name} ${isResearched ? '✓' : ''}</div>
-                    <div class="global-upgrade-description">${tech.description}</div>
-                    <div class="global-upgrade-cost">${costText}</div>
-                    <div class="global-upgrade-cost">Research Time: ${tech.researchTime}s</div>
-                    ${isResearching ? '<div style="color: #FF9800; font-weight: bold;">Researching...</div>' : ''}
-                `;
-                
-                if (!isResearched && canResearch && !isResearching) {
-                    const researchBtn = document.createElement('button');
-                    researchBtn.className = 'btn';
-                    researchBtn.style.marginTop = '8px';
-                    researchBtn.textContent = 'Research';
-                    researchBtn.onclick = () => startResearchTech(techId);
-                    node.appendChild(researchBtn);
-                }
-                
-                techTreeView.appendChild(node);
-            }
-        }
-
-        // Update global upgrades view
-        function updateGlobalUpgradesView() {
-            const upgradesView = document.getElementById('global-upgrades-view');
-            if (!upgradesView) return;
-            
-            upgradesView.innerHTML = '<h2>Global Factory Upgrades</h2><p>These upgrades apply to all factories with matching tags.</p>';
-            
-            const container = document.createElement('div');
-            container.className = 'global-upgrades-container';
-            
-            for (const [upgradeId, upgrade] of Object.entries(gameData.globalUpgrades)) {
-                const isResearched = gameState.globalUpgradesResearched[upgradeId];
-                const isResearching = gameState.globalUpgradesResearching === upgradeId;
-                const canResearch = canResearchGlobalUpgrade(upgradeId);
-                
-                const upgradeElement = document.createElement('div');
-                upgradeElement.className = `global-upgrade-item ${isResearched ? 'researched' : isResearching ? 'researching' : canResearch ? '' : 'locked'}`;
-                
-                // Tags display
-                let tagsHtml = '';
-                if (upgrade.tags && upgrade.tags.length > 0) {
-                    tagsHtml = '<div class="global-upgrade-tags">';
-                    upgrade.tags.forEach(tag => {
-                        tagsHtml += `<span class="global-upgrade-tag">${tag}</span>`;
-                    });
-                    tagsHtml += '</div>';
-                }
-                
-                // Cost text
-                let costText = 'Cost: ';
-                for (const [resource, amount] of Object.entries(upgrade.cost)) {
-                    costText += `${amount} ${gameData.resources[resource]?.name || resource}, `;
-                }
-                costText = costText.slice(0, -2);
-                
-                // Effects text
-                let effectsText = '';
-                if (upgrade.effect.type === 'normal') {
-                    if (upgrade.effect.outputMultiplier) {
-                        effectsText += `Output: ×${upgrade.effect.outputMultiplier.toFixed(2)} `;
-                    }
-                    if (upgrade.effect.cycleTimeReduction) {
-                        effectsText += `Speed: ×${upgrade.effect.cycleTimeReduction.toFixed(2)} `;
-                    }
-                    if (upgrade.effect.powerReduction) {
-                        effectsText += `Power: ×${upgrade.effect.powerReduction.toFixed(2)}`;
-                    }
-                } else if (upgrade.effect.type === 'script') {
-                    effectsText = 'Dynamic script-based effects';
-                }
-                
-                upgradeElement.innerHTML = `
-                    <div class="global-upgrade-name">${upgrade.name} ${isResearched ? '✓' : ''}</div>
-                    <div class="global-upgrade-description">${upgrade.description}</div>
-                    ${tagsHtml}
-                    <div class="global-upgrade-cost">${costText}</div>
-                    <div class="global-upgrade-cost">Research Time: ${upgrade.researchTime}s</div>
-                    <div class="upgrade-effects">${effectsText}</div>
-                    ${isResearching ? '<div style="color: #FF9800; font-weight: bold;">Researching...</div>' : ''}
-                `;
-                
-                if (!isResearched && canResearch && !isResearching) {
-                    const researchBtn = document.createElement('button');
-                    researchBtn.className = 'btn';
-                    researchBtn.style.marginTop = '8px';
-                    researchBtn.textContent = 'Research';
-                    researchBtn.onclick = () => startResearchGlobalUpgrade(upgradeId);
-                    upgradeElement.appendChild(researchBtn);
-                }
-                
-                container.appendChild(upgradeElement);
-            }
-            
-            upgradesView.appendChild(container);
         }
 
         // Check if tech can be researched
@@ -4123,6 +3989,7 @@
             let outputMultiplier = 1;
             let cycleTimeMultiplier = 1;
             let powerMultiplier = 1;
+            let capacityMultiplier = 1;
             
             for (const [upgradeId, upgrade] of Object.entries(gameState.globalUpgradeEffects)) {
                 // Check if factory has any of the upgrade's tags, or if upgrade applies to all factories
@@ -4137,6 +4004,7 @@
                         if (upgrade.effect.outputMultiplier) outputMultiplier *= upgrade.effect.outputMultiplier;
                         if (upgrade.effect.cycleTimeReduction) cycleTimeMultiplier *= upgrade.effect.cycleTimeReduction;
                         if (upgrade.effect.powerReduction) powerMultiplier *= upgrade.effect.powerReduction;
+                        if (upgrade.effect.capacityMultiplier) capacityMultiplier *= upgrade.effect.capacityMultiplier;
                     } else if (upgrade.effect.type === 'script') {
                         try {
                             const scriptMultiplier = evaluateGlobalUpgradeScript(upgrade.effect.script, context);
@@ -4148,7 +4016,7 @@
                 }
             }
             
-            return { outputMultiplier, cycleTimeMultiplier, powerMultiplier };
+            return { outputMultiplier, cycleTimeMultiplier, powerMultiplier, capacityMultiplier };
         }
 
         // Calculate tag boosts for a factory
@@ -4156,6 +4024,7 @@
             let outputMultiplier = 1;
             let cycleTimeMultiplier = 1;
             let powerMultiplier = 1;
+            let capacityMultiplier = 1;
             
             if (factory.tags) {
                 for (const tag of factory.tags) {
@@ -4164,11 +4033,12 @@
                         if (boost.outputMultiplier) outputMultiplier *= boost.outputMultiplier;
                         if (boost.cycleTimeReduction) cycleTimeMultiplier *= boost.cycleTimeReduction;
                         if (boost.powerReduction) powerMultiplier *= boost.powerReduction;
+                        if (boost.capacityMultiplier) capacityMultiplier *= boost.capacityMultiplier;
                     }
                 }
             }
             
-            return { outputMultiplier, cycleTimeMultiplier, powerMultiplier };
+            return { outputMultiplier, cycleTimeMultiplier, powerMultiplier, capacityMultiplier };
         }
 
         // Evaluate global upgrade script
@@ -4376,10 +4246,14 @@
                                     gameState.resourcesEverOwned.add(outputKey);
                                 }
                                 
-                                if (gameState.resources[outputKey] + totalOutput <= capacity) {
+                                const potentialTotal = gameState.resources[outputKey] + totalOutput;
+                                if (potentialTotal <= capacity) {
                                     gameState.resources[outputKey] += totalOutput;
                                 } else {
-                                    gameState.resources[outputKey] = capacity;
+                                    const availableCapacity = capacity - gameState.resources[outputKey];
+                                    if (availableCapacity > 0) {
+                                        gameState.resources[outputKey] += availableCapacity;
+                                    }
                                 }
                             }
                             
@@ -4414,12 +4288,6 @@
             updateFactories();
             updateBuiltFactories();
             updateStats();
-            
-            if (currentMainTab === 'tech') {
-                updateTechTreeView();
-            } else if (currentMainTab === 'global-upgrades') {
-                updateGlobalUpgradesView();
-            }
         }
 
         // Update Resources Display
@@ -4560,95 +4428,276 @@
 
         // Update Research Display
         function updateResearch() {
-            researchList.innerHTML = '';
-            
-            for (const [techId, tech] of Object.entries(gameData.techTree)) {
-                const isResearched = gameState.techResearched[techId];
-                const isResearching = gameState.techResearching === techId;
-                
-                if (techFilter === 'researched' && !isResearched) continue;
-                if (techFilter === 'available' && isResearched) continue;
-                if (!gameState.settings.showAllTech && !canResearchTech(techId)) continue;
-                
-                const canResearch = canResearchTech(techId);
-                let canAfford = true;
-                
-                for (const [resourceKey, amount] of Object.entries(tech.cost)) {
-                    if (gameState.resources[resourceKey] < amount) {
-                        canAfford = false;
-                        break;
-                    }
-                }
-                
-                let costText = 'Cost: ';
-                for (const [resourceKey, amount] of Object.entries(tech.cost)) {
-                    costText += `${amount} ${gameData.resources[resourceKey]?.name || resourceKey}, `;
-                }
-                costText = costText.slice(0, -2);
-                
-                let prereqText = '';
-                if (tech.prerequisites && tech.prerequisites.length > 0) {
-                    prereqText = 'Requires: ' + tech.prerequisites.map(p => gameData.techTree[p].name).join(', ');
-                }
-                
-                const researchElement = document.createElement('div');
-                researchElement.style.marginBottom = '15px';
-                researchElement.style.paddingBottom = '10px';
-                researchElement.style.borderBottom = '1px solid #eee';
-                
-                if (isResearching) {
-                    const progress = (gameState.techResearchProgress / gameState.techResearchTotalTime) * 100;
-                    researchElement.innerHTML = `
-                        <div style="margin-bottom: 8px;">
-                            <div style="font-weight: bold;">${tech.name}</div>
-                            <div style="font-size: 0.9rem; color: #666;">${tech.description}</div>
-                            <div style="font-size: 0.8rem; margin-top: 4px;">Research in progress...</div>
-                            <div class="research-progress">
-                                <div class="research-progress-bar" style="width: ${progress}%"></div>
-                            </div>
-                            <div style="font-size: 0.8rem; text-align: right;">
-                                ${Math.min(gameState.techResearchProgress, gameState.techResearchTotalTime).toFixed(1)} / ${gameState.techResearchTotalTime}s
-                            </div>
-                        </div>
-                    `;
-                } else if (isResearched) {
-                    researchElement.innerHTML = `
-                        <div style="margin-bottom: 8px;">
-                            <div style="font-weight: bold; color: green;">${tech.name} ✓</div>
-                            <div style="font-size: 0.9rem; color: #666;">${tech.description}</div>
-                            <div style="font-size: 0.8rem; color: green;">Researched</div>
-                        </div>
-                    `;
-                } else {
-                    researchElement.innerHTML = `
-                        <div style="margin-bottom: 8px;">
-                            <div style="font-weight: bold; color: ${canResearch ? 'black' : '#999'}">${tech.name}</div>
-                            <div style="font-size: 0.9rem; color: ${canResearch ? '#666' : '#999'}">${tech.description}</div>
-                            <div style="font-size: 0.8rem; margin-top: 4px;">${costText}</div>
-                            <div style="font-size: 0.8rem;">Research time: ${tech.researchTime}s</div>
-                            ${prereqText ? `<div style="font-size: 0.8rem; color: ${canResearch ? '#666' : '#f00'}">${prereqText}</div>` : ''}
-                        </div>
-                    `;
-                    
-                    const button = document.createElement('button');
-                    button.className = `btn ${canResearch && canAfford ? 'bldEnabled' : 'disabled'}`;
-                    button.textContent = `Research ${tech.name}`;
-                    button.disabled = !canResearch || !canAfford;
-                    button.title = `${tech.description}\n${costText}`;
-                    button.onclick = () => startResearchTech(techId);
-                    
-                    researchElement.appendChild(button);
-                }
-                
-                researchList.appendChild(researchElement);
-            }
-            
-            if (researchList.children.length === 0) {
-                researchList.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">No research available</div>';
-            }
-        }
-
-        // Update Factories Display
+                                    researchList.innerHTML = '';
+                                    
+                                    // Tech tree items
+                                    for (const [techId, tech] of Object.entries(gameData.techTree)) {
+                                        const isResearched = gameState.techResearched[techId];
+                                        const isResearching = gameState.techResearching === techId;
+                                        
+                                        // Determine if tech should be shown based on filter
+                                        let shouldShow = false;
+                                        
+                                        if (techFilter === 'researched') {
+                                            // Show only researched and researching techs
+                                            shouldShow = isResearched || isResearching;
+                                        } else if (techFilter === 'all') {
+                                            // Show all tech researches
+                                            shouldShow = true;
+                                        } else { // available filter
+                                            // Show techs that are not yet researched
+                                            shouldShow = !isResearched;
+                                        }
+                                        
+                                        if (!shouldShow) continue;
+                                        
+                                        // For 'available' filter, only show techs that can be researched with known resources
+                                        if (techFilter === 'available') {
+                                            // Check if all prerequisites are met
+                                            let prereqsMet = true;
+                                            for (const prereq of tech.prerequisites) {
+                                                if (!gameState.techResearched[prereq]) {
+                                                    prereqsMet = false;
+                                                    break;
+                                                }
+                                            }
+                                            
+                                            if (!prereqsMet) continue;
+                                            
+                                            // Check if we have access to the required resources
+                                            let canGetRequiredResources = true;
+                                            for (const [resourceKey] of Object.entries(tech.cost)) {
+                                                if (!gameState.resourcesEverOwned.has(resourceKey)) {
+                                                    canGetRequiredResources = false;
+                                                    break;
+                                                }
+                                            }
+                                            
+                                            if (!canGetRequiredResources) continue;
+                                        }
+                                        
+                                        const canResearch = canResearchTech(techId);
+                                        let canAfford = true;
+                                        
+                                        for (const [resourceKey, amount] of Object.entries(tech.cost)) {
+                                            if (gameState.resources[resourceKey] < amount) {
+                                                canAfford = false;
+                                                break;
+                                            }
+                                        }
+                                        
+                                        let costText = 'Cost: ';
+                                        for (const [resourceKey, amount] of Object.entries(tech.cost)) {
+                                            costText += `${amount} ${gameData.resources[resourceKey]?.name || resourceKey}, `;
+                                        }
+                                        costText = costText.slice(0, -2);
+                                        
+                                        let prereqText = '';
+                                        if (tech.prerequisites && tech.prerequisites.length > 0) {
+                                            prereqText = 'Requires: ' + tech.prerequisites.map(p => gameData.techTree[p].name).join(', ');
+                                        }
+                                        
+                                        const researchElement = document.createElement('div');
+                                        researchElement.style.marginBottom = '15px';
+                                        researchElement.style.paddingBottom = '10px';
+                                        researchElement.style.borderBottom = '1px solid #eee';
+                                        
+                                        if (isResearching) {
+                                            const progress = (gameState.techResearchProgress / gameState.techResearchTotalTime) * 100;
+                                            researchElement.innerHTML = `
+                                                <div style="margin-bottom: 8px;">
+                                                    <div style="font-weight: bold;">${tech.name}</div>
+                                                    <div style="font-size: 0.9rem; color: #666;">${tech.description}</div>
+                                                    <div style="font-size: 0.8rem; margin-top: 4px;">Research in progress...</div>
+                                                    <div class="research-progress">
+                                                        <div class="research-progress-bar" style="width: ${progress}%"></div>
+                                                    </div>
+                                                    <div style="font-size: 0.8rem; text-align: right;">
+                                                        ${Math.min(gameState.techResearchProgress, gameState.techResearchTotalTime).toFixed(1)} / ${gameState.techResearchTotalTime}s
+                                                    </div>
+                                                </div>
+                                            `;
+                                        } else if (isResearched) {
+                                            researchElement.innerHTML = `
+                                                <div style="margin-bottom: 8px;">
+                                                    <div style="font-weight: bold; color: green;">${tech.name} ✓</div>
+                                                    <div style="font-size: 0.9rem; color: #666;">${tech.description}</div>
+                                                    <div style="font-size: 0.8rem; color: green;">Researched</div>
+                                                </div>
+                                            `;
+                                        } else {
+                                            // For available filter, show unavailable techs in gray
+                                            const isAvailable = techFilter !== 'available' || canResearch;
+                        
+                                            const textColor = isAvailable ? 'black' : '#999';
+                                            const descColor = isAvailable ? '#666' : '#999';
+                                            const prereqColor = isAvailable ? '#666' : '#f00';
+                                            
+                                            researchElement.innerHTML = `
+                                                <div style="margin-bottom: 8px;">
+                                                    <div style="font-weight: bold; color: ${textColor}">${tech.name}</div>
+                                                    <div style="font-size: 0.9rem; color: ${descColor}">${tech.description}</div>
+                                                    <div style="font-size: 0.8rem; margin-top: 4px;">${costText}</div>
+                                                    <div style="font-size: 0.8rem;">Research time: ${tech.researchTime}s</div>
+                                                    ${prereqText ? `<div style="font-size: 0.8rem; color: ${prereqColor}">${prereqText}</div>` : ''}
+                                                </div>
+                                            `;
+                                            
+                                            const button = document.createElement('button');
+                                            button.className = `btn ${canResearch && canAfford ? 'bldEnabled' : 'disabled'}`;
+                                            button.textContent = `Research ${tech.name}`;
+                                            button.disabled = !canResearch || !canAfford;
+                                            button.title = `${tech.description}\n${costText}`;
+                                            button.onclick = () => startResearchTech(techId);
+                                            
+                                            researchElement.appendChild(button);
+                                        }
+                                        
+                                        researchList.appendChild(researchElement);
+                                    }
+                                    
+                                    // Global upgrade items
+                                    for (const [upgradeId, upgrade] of Object.entries(gameData.globalUpgrades)) {
+                                        const isResearched = gameState.globalUpgradesResearched[upgradeId];
+                                        const isResearching = gameState.globalUpgradesResearching === upgradeId;
+                                        
+                                        // Determine if upgrade should be shown based on filter
+                                        let shouldShow = false;
+                                        
+                                        if (techFilter === 'researched') {
+                                            // Show only researched and researching upgrades
+                                            shouldShow = isResearched || isResearching;
+                                        } else if (techFilter === 'all') {
+                                            // Show all upgrades
+                                            shouldShow = true;
+                                        } else { // available filter
+                                            // Show upgrades that are not yet researched
+                                            shouldShow = !isResearched;
+                                        }
+                                        
+                                        if (!shouldShow) continue;
+                                        
+                                        // For 'available' filter, only show upgrades that can be researched with known resources
+                                        if (techFilter === 'available') {
+                                            // Check if all prerequisites are met
+                                            let prereqsMet = true;
+                                            for (const prereq of upgrade.prerequisites) {
+                                                if (!gameState.globalUpgradesResearched[prereq]) {
+                                                    prereqsMet = false;
+                                                    break;
+                                                }
+                                            }
+                                            
+                                            if (!prereqsMet) continue;
+                                            
+                                            // Check if we have access to the required resources
+                                            let canGetRequiredResources = true;
+                                            for (const [resourceKey] of Object.entries(upgrade.cost)) {
+                                                if (!gameState.resourcesEverOwned.has(resourceKey)) {
+                                                    canGetRequiredResources = false;
+                                                    break;
+                                                }
+                                            }
+                                            
+                                            if (!canGetRequiredResources) continue;
+                                        }
+                                        
+                                        const canResearch = canResearchGlobalUpgrade(upgradeId);
+                                        let canAfford = true;
+                                        
+                                        for (const [resourceKey, amount] of Object.entries(upgrade.cost)) {
+                                            if (gameState.resources[resourceKey] < amount) {
+                                                canAfford = false;
+                                                break;
+                                            }
+                                        }
+                                        
+                                        // Tags display
+                                        let tagsHtml = '';
+                                        if (upgrade.tags && upgrade.tags.length > 0) {
+                                            tagsHtml = '<div class="global-upgrade-tags">';
+                                            upgrade.tags.forEach(tag => {
+                                                tagsHtml += `<span class="global-upgrade-tag">${tag}</span>`;
+                                            });
+                                            tagsHtml += '</div>';
+                                        }
+                                        
+                                        let costText = 'Cost: ';
+                                        for (const [resourceKey, amount] of Object.entries(upgrade.cost)) {
+                                            costText += `${amount} ${gameData.resources[resourceKey]?.name || resourceKey}, `;
+                                        }
+                                        costText = costText.slice(0, -2);
+                                        
+                                        let prereqText = '';
+                                        if (upgrade.prerequisites && upgrade.prerequisites.length > 0) {
+                                            prereqText = 'Requires: ' + upgrade.prerequisites.map(p => gameData.globalUpgrades[p].name).join(', ');
+                                        }
+                                        
+                                        const upgradeElement = document.createElement('div');
+                                        upgradeElement.style.marginBottom = '15px';
+                                        upgradeElement.style.paddingBottom = '10px';
+                                        upgradeElement.style.borderBottom = '1px solid #eee';
+                                        
+                                        if (isResearching) {
+                                            const progress = (gameState.globalUpgradesResearchProgress / gameState.globalUpgradesResearchTotalTime) * 100;
+                                            upgradeElement.innerHTML = `
+                                                <div style="margin-bottom: 8px;">
+                                                    <div style="font-weight: bold;">${upgrade.name}</div>
+                                                    <div style="font-size: 0.9rem; color: #666;">${upgrade.description}</div>
+                                                    ${tagsHtml}
+                                                    <div style="font-size: 0.8rem; margin-top: 4px;">Research in progress...</div>
+                                                    <div class="research-progress">
+                                                        <div class="research-progress-bar" style="width: ${progress}%"></div>
+                                                    </div>
+                                                    <div style="font-size: 0.8rem; text-align: right;">
+                                                        ${Math.min(gameState.globalUpgradesResearchProgress, gameState.globalUpgradesResearchTotalTime).toFixed(1)} / ${gameState.globalUpgradesResearchTotalTime}s
+                                                    </div>
+                                                </div>
+                                            `;
+                                        } else if (isResearched) {
+                                            upgradeElement.innerHTML = `
+                                                <div style="margin-bottom: 8px;">
+                                                    <div style="font-weight: bold; color: green;">${upgrade.name} ✓</div>
+                                                    <div style="font-size: 0.9rem; color: #666;">${upgrade.description}</div>
+                                                    ${tagsHtml}
+                                                    <div style="font-size: 0.8rem; color: green;">Researched</div>
+                                                </div>
+                                            `;
+                                        } else {
+                                            // For available filter, show unavailable upgrades in gray
+                                            const isAvailable = techFilter !== 'available' || canResearch;
+                                            const textColor = isAvailable ? 'black' : '#999';
+                                            const descColor = isAvailable ? '#666' : '#999';
+                                            const prereqColor = isAvailable ? '#666' : '#f00';
+                                            
+                                            upgradeElement.innerHTML = `
+                                                <div style="margin-bottom: 8px;">
+                                                    <div style="font-weight: bold; color: ${textColor}">${upgrade.name}</div>
+                                                    <div style="font-size: 0.9rem; color: ${descColor}">${upgrade.description}</div>
+                                                    ${tagsHtml}
+                                                    <div style="font-size: 0.8rem; margin-top: 4px;">${costText}</div>
+                                                    <div style="font-size: 0.8rem;">Research time: ${upgrade.researchTime}s</div>
+                                                    ${prereqText ? `<div style="font-size: 0.8rem; color: ${prereqColor}">${prereqText}</div>` : ''}
+                                                </div>
+                                            `;
+                                            
+                                            const button = document.createElement('button');
+                                            button.className = `btn ${canResearch && canAfford ? 'bldEnabled' : 'disabled'}`;
+                                            button.textContent = `Research ${upgrade.name}`;
+                                            button.disabled = !canResearch || !canAfford;
+                                            button.title = `${upgrade.description}\n${costText}`;
+                                            button.onclick = () => startResearchGlobalUpgrade(upgradeId);
+                                            
+                                            upgradeElement.appendChild(button);
+                                        }
+                                        
+                                        researchList.appendChild(upgradeElement);
+                                    }
+                                    
+                                    if (researchList.children.length === 0) {
+                                        researchList.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">No research available</div>';
+                                    }
+                                }        // Update Factories Display
         function updateFactories() {
             factoriesList.innerHTML = '';
             
@@ -4869,10 +4918,25 @@
                         input.addEventListener('change', function() {
                             const factoryKey = this.getAttribute('data-factory');
                             const modeId = this.getAttribute('data-mode');
-                            const newValue = parseInt(this.value) || 0;
+                            let newValue = parseInt(this.value) || 0;
                             const totalActive = gameState.activeFactories[factoryKey];
-                            const clampedValue = Math.max(0, Math.min(newValue, totalActive));
-                            setAllocationCount(factoryKey, modeId, clampedValue);
+                            
+                            // Calculate total currently allocated to ensure we don't exceed active factories
+                            const allocations = gameState.factoryAllocations[factoryKey] || {};
+                            let totalAllocated = 0;
+                            for (const alloc of Object.values(allocations)) {
+                                totalAllocated += alloc.count || 0;
+                            }
+                            
+                            // Adjust the value to not exceed available active factories
+                            const currentAllocation = (allocations[modeId] || { count: 0 }).count;
+                            const available = totalActive - (totalAllocated - currentAllocation);
+                            newValue = Math.max(0, Math.min(newValue, available));
+                            
+                            setAllocationCount(factoryKey, modeId, newValue);
+                            
+                            // Update the input field in case it was clamped
+                            this.value = newValue;
                         });
                     });
                     
@@ -4936,10 +5000,10 @@
                         <div class="mode-header">
                             <div class="mode-title">${mode.name}</div>
                             <div class="allocation-controls">
-                                <button class="input-btn" onclick="changeAllocation('${factoryKey}', '${mode.id}', -1)">−</button>
+                                <button class="input-btn" onclick="changeAllocation('${factoryKey}', '${mode.id}', -1); return false;">−</button>
                                 <input type="number" class="number-input" data-factory="${factoryKey}" data-mode="${mode.id}" 
                                        value="${currentAllocation}" min="0" max="${totalActive}">
-                                <button class="input-btn" onclick="changeAllocation('${factoryKey}', '${mode.id}', 1)">+</button>
+                                <button class="input-btn" onclick="changeAllocation('${factoryKey}', '${mode.id}', 1); return false;">+</button>
                             </div>
                         </div>
                         <div class="mode-details">${mode.description}</div>
@@ -5072,6 +5136,12 @@
             }
             
             setAllocationCount(factoryKey, modeId, newCount);
+            
+            // Update the input field to match the new value
+            const inputElement = document.querySelector(`input[data-factory="${factoryKey}"][data-mode="${modeId}"]`);
+            if (inputElement) {
+                inputElement.value = newCount;
+            }
         }
 
         // Set allocation count
@@ -5153,9 +5223,15 @@
                 gameState.activeFactories[factoryKey]++;
             }
             
-            // Add capacity
+            // Calculate tag boosts and global upgrades for capacity
+            const tagBoosts = calculateTagBoosts(factory);
+            const globalUpgrades = calculateGlobalUpgrades(factory);
+            const capacityMultiplier = tagBoosts.capacityMultiplier * globalUpgrades.capacityMultiplier;
+            
+            // Add capacity with multiplier applied
             for (const [type, amount] of Object.entries(factory.capacityAdditions)) {
-                gameState.capacities[type] += amount;
+                const capacityIncrease = Math.floor(amount * capacityMultiplier);
+                gameState.capacities[type] += capacityIncrease;
             }
             
             showNotification(`${factory.name} built!`);
@@ -5230,14 +5306,20 @@
                 gameState.factoryAllocations[factoryKey] = {};
             }
             
+            // Calculate tag boosts and global upgrades for capacity
+            const tagBoosts = calculateTagBoosts(factory);
+            const globalUpgrades = calculateGlobalUpgrades(factory);
+            const capacityMultiplier = tagBoosts.capacityMultiplier * globalUpgrades.capacityMultiplier;
+            
             // Refund 50% of build cost
             for (const [resourceKey, amount] of Object.entries(factory.buildCost)) {
                 gameState.resources[resourceKey] += Math.floor(amount * 0.5);
             }
             
-            // Remove capacity
+            // Remove capacity with multiplier applied
             for (const [type, amount] of Object.entries(factory.capacityAdditions)) {
-                gameState.capacities[type] = Math.max(gameData.capacities[type], gameState.capacities[type] - amount);
+                const capacityDecrease = Math.floor(amount * capacityMultiplier);
+                gameState.capacities[type] = Math.max(gameData.capacities[type], gameState.capacities[type] - capacityDecrease);
             }
             
             showNotification(`${factory.name} demolished. 50% of resources refunded.`);
@@ -5278,10 +5360,15 @@
 
         // Load game
         function loadGame() {
-            const cookieValue = document.cookie
-                .split('; ')
-                .find(row => row.startsWith('factoryGame='))
-                ?.split('=')[1];
+            let cookieValue = null;
+            const cookieParts = document.cookie.split(';');
+            for (let i = 0; i < cookieParts.length; i++) {
+                const part = cookieParts[i].trim();
+                if (part.startsWith('factoryGame=')) {
+                    cookieValue = part.substring('factoryGame='.length);
+                    break;
+                }
+            }
                 
             if (cookieValue) {
                 try {
@@ -5394,7 +5481,7 @@
             
             document.getElementById('auto-activate-toggle').checked = settings.autoActivateFactories;
             document.getElementById('show-all-resources-toggle').checked = settings.showAllResources;
-            document.getElementById('show-all-tech-toggle').checked = settings.showAllTech;
+
             
             modal.style.display = 'block';
         }
@@ -5408,7 +5495,7 @@
         function saveSettings() {
             gameState.settings.autoActivateFactories = document.getElementById('auto-activate-toggle').checked;
             gameState.settings.showAllResources = document.getElementById('show-all-resources-toggle').checked;
-            gameState.settings.showAllTech = document.getElementById('show-all-tech-toggle').checked;
+
             
             saveGame();
             closeSettings();
